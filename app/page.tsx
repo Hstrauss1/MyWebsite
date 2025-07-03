@@ -107,20 +107,27 @@ export default function Home() {
               <h2 className="section-title">MY PROJECTS</h2>
               <div className="projects-scroll">
                 {/* AVSWU-Pack Project */}
-                <Link href="/projects/avshu-pack" className="project-card">
+                <Link href="/projects/avswu-pack" className="project-card">
                   <div
                     style={{
                       width: "159px",
                       height: "155px",
                       background:
-                        "linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%)",
+                        "linear-gradient(135deg,rgb(255, 255, 255) 0%,rgb(255, 255, 255) 100%)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "48px",
                     }}
                   >
-                    🚗
+                    <img
+                      src="/projects/av_green_s.png" /* ← path to your image */
+                      alt="Car"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                      }}
+                    />
                   </div>
                   <div className="project-bottom">
                     <div className="project-title">AVSWU-Pack</div>
@@ -135,29 +142,23 @@ export default function Home() {
                 <Link href="/projects/8x8" className="project-card">
                   <div
                     style={{
-                      width: "336px",
-                      height: "155px",
-                      background:
-                        "linear-gradient(135deg, #2196F3 0%, #1976D2 100%)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "#fff",
-                      fontSize: "14px",
-                      fontFamily: "monospace",
-                      flexDirection: "column",
-                      gap: "4px",
+                      width: "100%", // or set fixed width/height if needed
+                      height: "200px", // or whatever height you want the image section to be
+                      overflow: "hidden",
                     }}
                   >
-                    <div>█ █ █ ▄ ▄ █ █ █</div>
-                    <div>█ ▄ ▄ █ █ ▄ ▄ █</div>
-                    <div>▄ █ █ ▄ ▄ �� █ ▄</div>
-                    <div>▄ ▄ █ █ █ █ ▄ ▄</div>
-                    <div>█ █ ▄ ▄ ▄ ▄ █ █</div>
-                    <div>█ ▄ █ ▄ ▄ █ ▄ █</div>
-                    <div>▄ █ ▄ █ █ ▄ █ ▄</div>
-                    <div>█ █ █ ▄ ▄ █ █ █</div>
+                    <img
+                      src="/projects/shape_classifier.png"
+                      alt="Classifier"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                      }}
+                    />
                   </div>
+
                   <div className="project-bottom">
                     <div className="project-title-lato">8X8</div>
                     <div className="project-description-small">

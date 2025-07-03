@@ -8,7 +8,7 @@ export default function ProjectsPage() {
       description:
         "A block-chain integrated autonomous vehicle simulation platform.",
       image: "./projects/av_green_s.png",
-      link: "/projects/avshu-pack",
+      link: "/projects/avswu-pack",
       isWide: false,
     },
     {
