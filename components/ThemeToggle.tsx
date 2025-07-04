@@ -37,7 +37,7 @@ export default function ThemeToggle() {
       </svg>
       <div
         className="theme-dot"
-        style={{ position: "absolute", left: "20.8px", top: "10px" }}
+        style={{ position: "absolute", left: "20.5px", top: "10px" }}
       ></div>
       <div
         className="theme-line-top"
