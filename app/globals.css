@@ -194,7 +194,7 @@ body {
   display: flex;
   width: 326px;
   height: 269px;
-  padding: 0px 1px;
+  padding: 0px 0px;
   flex-direction: column;
   align-items: center;
   border-radius: 16px;
@@ -233,6 +233,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  height: 45%;
   align-self: stretch;
   background: var(--border-color);
 }
@@ -446,6 +447,7 @@ body {
   border-radius: 50%;
   border: 3px solid #083556;
   background: #ffffff;
+  color: #083556;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -469,39 +471,42 @@ body {
 }
 
 .theme-dot {
-  width: 3px;
-  height: 3px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
-  background: #083556;
+  background: #1a0856;
 }
 
 .theme-line-top {
-  width: 9px;
-  height: 1px;
+  width: 1.5px;
+  height: 9px;
   background: #083556;
 }
 
 .theme-line-bottom {
-  width: 9px;
-  height: 1px;
+  width: 1.5px;
+  height: 9px;
   background: #083556;
 }
 
 /* Dark theme toggle styles */
 [data-theme="dark"] .theme-toggle {
   border: 3px solid #a2d55d;
-  background: transparent;
+
+  background: #083556;
 }
 
 [data-theme="dark"] .theme-icon {
   fill: #a2d55d;
 }
-
+[data-theme="dark"] .theme-dummy {
+  background: #a2d55d;
+}
 [data-theme="dark"] .theme-dot {
-  background: #560809;
+  background: #ff0004;
   border: 1px solid #ff0004;
-  width: 3px;
-  height: 3px;
+  width: 4px;
+  height: 4px;
 }
 
 [data-theme="dark"] .theme-line-top {
