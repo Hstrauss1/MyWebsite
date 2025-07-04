@@ -16,7 +16,7 @@ export default function AVSHUPackProject() {
           </h1>
 
           <img
-            src="./projects/av_green_s.png"
+            src="/projects/av_green_s.png"
             alt="AVSWU-Pack Project"
             className="project-detail-image"
             style={{ width: "1112px", height: "346px", objectFit: "contain" }}

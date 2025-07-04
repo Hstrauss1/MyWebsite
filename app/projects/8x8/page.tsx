@@ -16,7 +16,7 @@ export default function EightByEightProject() {
           </h1>
 
           <img
-            src="./projects/shape_classifier.png"
+            src="/projects/shape_classifier.png"
             alt="8X8 Project"
             className="project-detail-image"
           />
