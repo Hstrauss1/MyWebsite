@@ -64,7 +64,7 @@ body::before {
   /*background-image: var(--pattern-url);
   background-size: var(--tile-x) var(--tile);*/
   background-image: var(--pattern-url), var(--pattern-url);
-  background-size: 200px 300px;                    /* applies to both */
+  background-size: 150px 300px;                    /* applies to both */
   background-position: 0 0, calc(var(--tile) / 2) calc(var(--tile) / 2);
   background-repeat: repeat;
   opacity: 0.1;
