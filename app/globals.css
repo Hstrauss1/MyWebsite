@@ -79,7 +79,7 @@ body::before {
 }
 
 .section-title {
-  font-family: "Geist Mono", monospace;
+  font-family: "Lato", monospace;
   font-size: 20px;
   font-weight: 700;
   color: var(--text-muted);
