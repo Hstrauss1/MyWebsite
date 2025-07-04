@@ -7,7 +7,7 @@ export default function ProjectsPage() {
       title: "AVSWU-Pack",
       description:
         "A block-chain integrated autonomous vehicle simulation platform.",
-      image: "./projects/av_green_s.png",
+      image: "/projects/av_green_s.png",
       link: "/projects/avswu-pack",
       isWide: false,
     },
@@ -15,7 +15,7 @@ export default function ProjectsPage() {
       title: "8X8",
       description:
         "An 8x8 pixel shape classifier built at the transistor level.",
-      image: "./projects/shape_classifier.png",
+      image: "/projects/shape_classifier.png",
       link: "/projects/8x8",
       isWide: true,
     },
