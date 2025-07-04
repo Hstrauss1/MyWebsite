@@ -9,7 +9,7 @@ export default function ProjectsPage() {
         "A block-chain integrated autonomous vehicle simulation platform.",
       image: "/projects/av_green_s.png",
       link: "/projects/avswu-pack",
-      isWide: false,
+      isWide: true,
     },
     {
       title: "8X8",
@@ -32,9 +32,9 @@ export default function ProjectsPage() {
       .map((_, index) => ({
         title: "?",
         description: "to be D",
-        image: null,
+        image: "/projects/droids.png",
         link: "/projects/sample",
-        isWide: false,
+        isWide: true,
       })),
   ];
 
