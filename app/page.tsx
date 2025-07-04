@@ -113,8 +113,8 @@ export default function Home() {
                     <div
                       style={{
                         width: "100%",
-                        height: "200px", // Or any fixed height
-                        backgroundColor: "#D5D7D4", // Or whatever color suits your design
+                        height: "148px", 
+                        backgroundColor: "#D5D7D4", 
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
