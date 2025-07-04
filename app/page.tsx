@@ -200,42 +200,7 @@ export default function Home() {
             </div>
 
             {/* Bottom Section */}
-            <div className="bottom-section">
-              <div className="performance-title-container">
-                <div className="performance-title">Pick-Performance</div>
-              </div>
-              <div className="performance-card">
-                <div className="performance-header">
-                  <div className="performance-header-text">
-                    PORTFOLIO PERFORMANCE
-                  </div>
-                </div>
-                <div className="performance-body">
-                  <div className="performance-metrics">
-                    <div className="metric-label">TOTAL RETURN</div>
-                    <div className="metric-value">+2.15%</div>
-                  </div>
-                  <div className="performance-chart">
-                    <div className="chart-period">7 DAYS</div>
-                    <svg
-                      width="273"
-                      height="78"
-                      viewBox="0 0 274 78"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      style={{ position: "absolute", top: "1px", left: "6px" }}
-                    >
-                      <path
-                        opacity="0.3"
-                        d="M0.5 39H273.5"
-                        stroke="var(--border-color)"
-                        strokeDasharray="2 2"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
+            
           </div>
         </div>
       </Background>
