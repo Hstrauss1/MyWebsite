@@ -12,6 +12,9 @@
   --border-color: #083556;
   --shadow: rgba(8, 53, 86, 0.25);
   --profile-border: rgba(8, 53, 86, 0.5);
+
+  --tile-x: 200px;
+  --tile: 300px;
 }
 
 [data-theme="dark"] {
@@ -44,11 +47,25 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.backgroundcontainer {
-  width: 100vw;
-  height: 100vh;
-  background-image: url("/public/images/pattern.svg");
-  background-size: 100px 100px;
+html[data-theme="dark"] {
+  --pattern-url: url("/images/dark-pattern.svg");
+}
+
+html[data-theme="light"] {
+  --pattern-url: url("/images/pattern.svg");
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--pattern-url);
+  background-size: var(--tile-x) var(--tile);
+  background-position: 0 0, calc(var(--tile) / 2) calc(var(--tile) / 2);
+  background-repeat: repeat;
+  opacity: 0.1;
 }
 
 .container {

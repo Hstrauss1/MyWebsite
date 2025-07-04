@@ -1,31 +1,8 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import useThemeToggle from "@/hooks/useThemeToggle";
 
 export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    const shouldBeDark = savedTheme === "dark" || (!savedTheme && prefersDark);
-
-    setIsDark(shouldBeDark);
-    document.documentElement.setAttribute(
-      "data-theme",
-      shouldBeDark ? "dark" : "light"
-    );
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = !isDark;
-    setIsDark(newTheme);
-    const theme = newTheme ? "dark" : "light";
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  };
+  const [isDark, toggleTheme] = useThemeToggle();
 
   return (
     <button
