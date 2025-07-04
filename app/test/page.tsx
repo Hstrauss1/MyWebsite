@@ -3,7 +3,7 @@
 
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import { Suspense, useRef } from "react";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFLoader } from "three-stdlib";
 import { Center } from "@react-three/drei";
 import type * as THREE from "three";
 
