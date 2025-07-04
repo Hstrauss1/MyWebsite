@@ -4,11 +4,18 @@ import { useState, useEffect } from "react";
 const useThemeToggle = () => {
   const [isDark, setIsDark] = useState(false);
 
+  const setTheme = (dark: boolean) => {
+    const theme = dark ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  };
+
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
-      setIsDark(savedTheme === "dark");
-      document.documentElement.setAttribute("data-theme", savedTheme);
+      const isDark = savedTheme === "dark";
+      setIsDark(isDark);
+      setTheme(isDark);
       return;
     }
 
@@ -17,21 +24,14 @@ const useThemeToggle = () => {
     ).matches;
 
     setIsDark(prefersDark);
-    document.documentElement.setAttribute(
-      "data-theme",
-      prefersDark ? "dark" : "light",
-    );
+    setTheme(prefersDark);
   }, []);
 
   const toggleTheme = () => {
-    setIsDark((prev) => !prev);
+    const dark = !isDark;
+    setIsDark(dark);
+    setTheme(dark);
   };
-
-  useEffect(() => {
-    const theme = isDark ? "dark" : "light";
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  }, [isDark]);
 
   return [isDark, toggleTheme] as const;
 };

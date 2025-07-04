@@ -1,9 +1,0 @@
-{
-  "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
-  "/projects/8x8/page": "app/projects/8x8/page.js",
-  "/projects/avswu-pack/page": "app/projects/avswu-pack/page.js",
-  "/projects/page": "app/projects/page.js",
-  "/projects/sample/page": "app/projects/sample/page.js",
-  "/test/page": "app/test/page.js"
-}
