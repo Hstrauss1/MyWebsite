@@ -19,8 +19,15 @@ export default function ProjectsPage() {
       link: "/projects/8x8",
       isWide: true,
     },
+    {
+      title: "Author Attribution",
+      description: "A traditional ML approach to author identification.",
+      image: "/projects/author.png",
+      link: "/projects/Author",
+      isWide: true,
+    },
     // Placeholder projects with technical icons
-    ...Array(7)
+    ...Array(6)
       .fill(null)
       .map((_, index) => ({
         title: "?",
@@ -49,7 +56,12 @@ export default function ProjectsPage() {
 
             <div className="projects-grid">
               {projects.map((project, index) => (
-                <Link key={index} href={project.link} className="project-card">
+                <Link
+                  key={index}
+                  href={project.link}
+                  className="project-card"
+                  style={index === 0 ? { backgroundColor: "#D5D7D4" } : {}}
+                >
                   {project.image ? (
                     <img
                       src={project.image}
