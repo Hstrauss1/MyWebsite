@@ -1,12 +1,13 @@
 import yahooFinance from "yahoo-finance2";
 
 /* ─────────── types ─────────── */
-export interface SharePos {
+export type SharePos = {
   symbol: string;
   shares: number;
   buyPrice: number;
   purchaseDate: string;
-}
+  reason?: string;
+};
 export interface ShareCount {
   symbol: string;
   shares: number;

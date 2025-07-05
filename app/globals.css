@@ -380,7 +380,10 @@ body::before {
 
 .performance-card {
   display: flex;
-  width: 322px;
+  width: 100%;
+  height: auto; /* remove 50vh restriction */
+  min-height: 200px; /* optional: base height to prevent collapse */
+  max-height: 5000px;
   flex-direction: column;
   border-radius: 10px;
   border: 2px solid var(--border-color);
@@ -405,10 +408,17 @@ body::before {
 }
 
 .performance-body {
+  /* existing rules */
+  width: 100%;
   display: flex;
   padding: 16px;
   flex-direction: column;
   gap: 12px;
+
+  /* new rules */
+  flex: 1 1 auto; /* shrink/grow with parent */
+  min-height: 0; /* let inner flex items collapse instead of overflow */
+  box-sizing: border-box; /* padding included in height calc */
 }
 
 .performance-metrics {
@@ -434,8 +444,9 @@ body::before {
 }
 
 .performance-chart {
-  width: 284px;
-  height: 80px;
+  aspect-ratio: 15 / 4; /* 300 / 80 = 3.75 = 15:4  */
+  width: 100%;
+  height: auto;
   border-radius: 5px;
   border: 1px solid rgba(8, 53, 86, 0.2);
   background: rgba(8, 53, 86, 0.05);
@@ -447,7 +458,7 @@ body::before {
   bottom: 5px;
   left: 5px;
   font-family: "Lato", sans-serif;
-  font-size: 8px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--border-color);
   line-height: 1.5;
@@ -568,7 +579,7 @@ body::before {
   justify-content: center;
   margin: 12px auto; /* ⬅ centers it horizontally */
   padding: 6px 16px;
-  border-radius: 9999px;
+  border-radius: 9px;
   background-color: var(--border-color, #3f3f46); /* fallback */
   color: white;
   font-family: "lato", monospace;
@@ -579,7 +590,11 @@ body::before {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .details-button:hover {
-  background-color: #52525b;
+  background-color: #a2d55d;
+  transform: scale(1.03);
+}
+[data-theme="dark"] .details-button:hover {
+  background-color: #083556;
   transform: scale(1.03);
 }
 
@@ -713,7 +728,6 @@ body::before {
   z-index: 0;
 }
 
-/* add the background pattern like body::before */
 .fullscreen-canvas-container::before {
   content: "";
   position: fixed; /* not absolute */
@@ -795,5 +809,99 @@ body::before {
   border: 2px solid var(--border-color);
   cursor: pointer;
   z-index: 1000;
-  animation: spin 2s linear infinite; /* 💫 */
+  animation: spin 2s linear infinite;
+}
+
+/*StockPage*/
+[data-theme="dark"] .stock-row-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  gap: 6px;
+  min-width: 50%;
+  width: auto;
+  max-width: 100%;
+  background: #1c6894;
+  border-radius: 10px;
+  margin-bottom: 2px;
+  box-shadow: 0 2px 4px var(--shadow);
+}
+
+.stock-row-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  gap: 6px;
+  min-width: 50%;
+  width: auto;
+  max-width: 100%;
+  background: #083556;
+  border-radius: 10px;
+  margin-bottom: 2px;
+  box-shadow: 0 2px 4px var(--shadow);
+}
+
+.ticker-box {
+  flex: 0 0 auto;
+  width: 20%;
+  height: 80%;
+  background: var(--card-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.ticker-text {
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  color: #000000; /* remains black for contrast against white */
+}
+
+.stock-stats-row {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 29px;
+  align-items: center;
+  justify-content: flex-start;
+
+  color: #eae4d7;
+  font-family: "Lato", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 15px;
+  min-width: 200px;
+}
+
+.stat-item {
+  flex: 1 0 auto;
+  min-width: 50px;
+  text-align: center;
+}
+
+.chart-period-base {
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  display: inline-block;
+}
+
+.chart-period-up {
+  color: #08a63f;
+}
+
+.chart-period-down {
+  color: #b70000;
 }

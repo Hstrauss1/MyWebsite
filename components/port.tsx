@@ -1,86 +1,95 @@
+/* components/PortfolioWidget.tsx */
 "use client";
 import useSWR from "swr";
 import Link from "next/link";
 
 export default function PortfolioWidget() {
+  /* ─── fetch API payload ─── */
   const { data, error } = useSWR("/api/portfolio", (url) =>
     fetch(url).then((r) => r.json())
   );
 
+  /* ─── loading / error UI ─── */
   if (error || !data) {
-    const message = error ? "Error loading data." : "Loading…";
-
+    const message = error ? "Error loading data, Reload Page." : "Loading…";
     return (
       <div className="flex items-center justify-center min-h-screen bg-neutral-900">
-        <div className="bottom-section text-white">
-          <div className="performance-title-container mb-2">
-            <div className="performance-title text-sm tracking-wider text-gray-400">
-              Pick-Performance
-            </div>
-          </div>
-
-          <div className="performance-card border border-gray-700 rounded bg-gray-800 w-[300px]">
-            <div className="performance-header border-b border-gray-700 p-2 text-center text-xs tracking-wider">
-              PORTFOLIO PERFORMANCE
-            </div>
-
-            <div className="performance-body p-4 flex items-center justify-center h-[140px]">
-              <span className="text-gray-400 text-sm italic">{message}</span>
-            </div>
-          </div>
-        </div>
+        <MiniCard message={message} />
       </div>
     );
   }
 
-  // ⬇⬇ guard against undefined
-  const pct = data.changePercent?.toFixed(2);
+  /* ─── safeguard sparkline ─── */
+  const rawSeries: number[] = Array.isArray(data.sparkline)
+    ? data.sparkline
+    : [];
+  const priceSeries: number[] = rawSeries.filter((n) => n !== 0);
 
+  if (!priceSeries) {
+    console.warn("⚠️  sparkline missing or empty:", data.sparkline);
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-neutral-900">
+        <MiniCard message="No sparkline data." />
+      </div>
+    );
+  }
+
+  /* ─── logging for dev ─── */
+  console.log("📈 raw sparkline:", priceSeries);
+
+  /* ─── normalize to % change ─── */
+  const basePrice = priceSeries[0];
+  const sparkPct = priceSeries.map((p) => ((p - basePrice) / basePrice) * 100);
+  const lastPct90 = sparkPct.length > 0 ? sparkPct[sparkPct.length - 1] : 0;
+  const pct90d = lastPct90.toFixed(2);
+  const pct90dUp = lastPct90 >= 0;
+  const w = 625; // internal SVG units (x-axis 0→100)
+  const h = 125; // internal SVG units (y-axis 0→100)
+
+  /* ─── metric & sparkline drawing params ─── */
+  const pct = (data.changePercent ?? 0).toFixed(2);
   const up = (data.changePercent ?? 0) >= 0;
-  const spark = data.sparkline as number[];
-  const w = 270;
-  const h = 60;
 
-  let points = "0,0";
-  if (spark && spark.length > 1) {
-    const min = Math.min(...spark);
-    const max = Math.max(...spark);
-    const span = max - min || 1;
-    const step = w / (spark.length - 1);
-
-    points = spark
+  /* ─── polyline points ─── */ let points = "";
+  if (priceSeries.length > 1) {
+    const min = Math.min(...priceSeries);
+    const max = Math.max(...priceSeries);
+    const span = max - min || 1; // avoid /0
+    points = priceSeries
       .map((v, i) => {
-        const y = h - ((v - min) / span) * h;
-        const x = i * step;
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
+        const x = (i / (priceSeries.length - 1)) * w; // 0-100
+        const y = h - ((v - min) / span) * h; // 0-100
+        return `${x.toFixed(2)},${y.toFixed(2)}`;
       })
       .join(" ");
   }
 
+  console.log("📐 polyline points:", points);
+
+  /* ─── rendered card ─── */
   return (
     <div className="flex items-center justify-center min-h-screen bg-neutral-900">
-      {/* Performance card with sparkline */}
       <div className="bottom-section text-white">
-        <div className="performance-title-container mb-2">
-          <div className="performance-title text-sm tracking-wider text-gray-400">
-            Pick-Performance
-          </div>
-        </div>
+        {/* title */}
+        <h2 className="performance-title text-sm tracking-wider text-gray-400 mb-2">
+          The Port
+        </h2>
 
+        {/* card */}
         <div className="performance-card border border-gray-700 rounded bg-gray-800 w-[300px]">
-          {/* Header */}
+          {/* header */}
           <div className="performance-header border-b border-gray-700 p-2 text-center text-xs tracking-wider">
             <p className="performance-header-text">PORTFOLIO PERFORMANCE</p>
           </div>
 
-          {/* Body */}
+          {/* body */}
           <div className="performance-body p-4">
-            {/* Metrics */}
+            {/* metric */}
             <div className="performance-metrics text-center mb-4">
-              <div className="metric-label text-gray-400 text-xs mb-1">
+              <p className="metric-label text-gray-400 text-xs mb-1">
                 DAY RETURN
-              </div>
-              <div
+              </p>
+              <p
                 className={
                   up
                     ? "metric-value text-green-400 text-lg"
@@ -89,28 +98,30 @@ export default function PortfolioWidget() {
               >
                 {up ? "+" : ""}
                 {pct}%
-              </div>
+              </p>
             </div>
 
-            {/* ✅ SVG Sparkline */}
-            <div className="performance-chart relative h-[80px] border border-gray-700 rounded">
-              <div className="chart-period absolute top-1 left-2 text-xs text-gray-400">
-                30 DAYS
+            {/* sparkline */}
+            <div className="performance-chart">
+              <div className="flex gap-2 items-center mb-2">
+                <span className="px-2 py-1 bg-gray-700 text-xs rounded text-white">
+                  90 DAYS
+                </span>
+                <span
+                  className={`chart-period-base ${
+                    pct90dUp ? "chart-period-up" : "chart-period-down"
+                  }`}
+                >
+                  ({pct90dUp ? "+" : ""}
+                  {pct90d}%)
+                </span>
               </div>
               <svg
-                width={w + 3}
-                height={h + 18}
-                viewBox={`0 0 ${w + 4} ${h + 18}`}
-                fill="none"
+                viewBox={`0 0 ${w} ${h}`}
+                preserveAspectRatio="none"
+                className="absolute inset-0 w-full h-full"
                 xmlns="http://www.w3.org/2000/svg"
-                className="absolute top-[1px] left-[6px]"
               >
-                <path
-                  opacity="0.3"
-                  d={`M0.5 ${h / 2 + 9}H${w + 3.5}`}
-                  stroke="#888"
-                  strokeDasharray="2 2"
-                />
                 <polyline
                   fill="none"
                   stroke={up ? "#4ade80" : "#f87171"}
@@ -119,10 +130,33 @@ export default function PortfolioWidget() {
                 />
               </svg>
             </div>
+
+            {/* link */}
             <Link href="/portfolio" className="details-button">
               more info
             </Link>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── tiny helper card for loading / empty states ─── */
+function MiniCard({ message }: { message: string }) {
+  return (
+    <div className="bottom-section text-white">
+      <div className="performance-title-container mb-2">
+        <div className="performance-title text-sm tracking-wider text-gray-400">
+          Pick-Performance
+        </div>
+      </div>
+      <div className="performance-card border border-gray-700 rounded bg-gray-800 w-[300px]">
+        <div className="performance-header border-b border-gray-700 p-2 text-center text-xs tracking-wider">
+          PORTFOLIO PERFORMANCE
+        </div>
+        <div className="performance-body p-4 flex items-center justify-center h-[140px]">
+          <span className="text-gray-400 text-sm italic">{message}</span>
         </div>
       </div>
     </div>

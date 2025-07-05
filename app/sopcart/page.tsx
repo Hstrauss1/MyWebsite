@@ -1,6 +1,6 @@
 import Link from "next/link";
 import ThemeToggle from "../../components/ThemeToggle";
-import TestPage2 from "@/app/test2/page";
+import TestPage2 from "../../components/cartsop";
 
 export default function SampleProject() {
   return (
