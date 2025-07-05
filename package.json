@@ -12,10 +12,13 @@
     "@next/font": "^14.2.15",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
+    "date-fns": "^4.1.0",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
-    "three": "^0.178.0"
+    "swr": "^2.3.4",
+    "three": "^0.178.0",
+    "yahoo-finance2": "^2.13.3"
   },
   "devDependencies": {
     "@types/node": "^20",

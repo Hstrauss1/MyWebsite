@@ -1,9 +1,13 @@
 import Link from "next/link";
 import ThemeToggle from "../components/ThemeToggle";
+import PortfolioWidget from "@/components/port";
 
 export default function Home() {
   return (
     <div className="relative min-h-screen bg-transparent overflow-visible">
+      <Link href="/sopcart" className="right-corner-button">
+        ✨ Click Me
+      </Link>
       <ThemeToggle />
       <div className="py-12">
         {/* Header Section */}
@@ -194,6 +198,7 @@ export default function Home() {
         </div>
 
         {/* Bottom Section */}
+        <PortfolioWidget></PortfolioWidget>
       </div>
     </div>
   );

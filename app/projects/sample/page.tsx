@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ThemeToggle from "../../../components/ThemeToggle";
 import TestPage from "@/app/test/page";
+import TestPage2 from "@/app/test2/page";
 
 export default function SampleProject() {
   return (
