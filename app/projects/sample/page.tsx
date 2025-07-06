@@ -10,6 +10,9 @@ export default function SampleProject() {
         <Link href="/projects" className="back-button">
           ←
         </Link>
+        <Link href="/sopcart" className="right-corner-button">
+          ✨ Click Me
+        </Link>
       </div>
       <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
         <div className="pointer-events-auto">

@@ -5,9 +5,6 @@ import PortfolioWidget from "@/components/port";
 export default function Home() {
   return (
     <div className="relative min-h-screen bg-transparent overflow-visible">
-      <Link href="/sopcart" className="right-corner-button">
-        ✨ Click Me
-      </Link>
       <ThemeToggle />
       <div className="py-12">
         {/* Header Section */}
