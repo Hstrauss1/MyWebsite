@@ -90,11 +90,9 @@ export default function PortfolioWidget() {
                 DAY RETURN
               </p>
               <p
-                className={
-                  up
-                    ? "metric-value text-green-400 text-lg"
-                    : "metric-value text-red-400 text-lg"
-                }
+                className={`chart-period-base ${
+                  up ? "chart-period-up" : "chart-period-down"
+                }`}
               >
                 {up ? "+" : ""}
                 {pct}%
