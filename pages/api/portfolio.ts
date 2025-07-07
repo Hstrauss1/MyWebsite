@@ -352,13 +352,13 @@ export default async function handler(
         reason: lot.reason ?? "NA",
       };
     });
-    console.log(
-      "✅ backend sparkline (length =",
-      sparkline.length,
-      "):",
-      sparkline
-    );
-    return res.status(200).json({ changePercent, sparkline, details });
+
+    return res.status(200).json({
+      changePercent,
+      sparkline,
+      details,
+      dayISO, // ← add this to sync with SPY
+    });
   } catch (err) {
     console.error("❌ Portfolio API error:", err);
     res.status(500).json({ error: "Server error" });

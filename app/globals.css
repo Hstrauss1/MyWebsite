@@ -407,6 +407,14 @@ body::before {
   line-height: 1.5;
 }
 
+.performance-header-small-text {
+  font-family: "Lato", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.5;
+}
+
 .performance-body {
   /* existing rules */
   width: 100%;
