@@ -434,6 +434,9 @@ body::before {
   flex-direction: column;
   gap: 8px;
 }
+.SP {
+  color: #3b02f6;
+}
 
 .metric-label {
   font-family: "Lato", sans-serif;

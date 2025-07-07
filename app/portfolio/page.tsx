@@ -3,6 +3,7 @@
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 import useSWR from "swr";
+import PortfolioWidgetNo from "@/components/portNo";
 
 type StockDetail = {
   symbol: string;
@@ -142,6 +143,7 @@ export default function StockListPage() {
           </div>
         )}
       </div>
+      <PortfolioWidgetNo />
     </div>
   );
 }
