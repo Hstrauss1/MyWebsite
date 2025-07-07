@@ -141,7 +141,7 @@ const portfolio: SharePos[] = [
     shares: 240,
     buyPrice: 1,
     purchaseDate: "2024-12-20",
-    reason: "not sure",
+    reason: "inhaleable insulin?",
   },
   {
     symbol: "NVDA",
