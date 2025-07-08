@@ -321,22 +321,40 @@ export default async function handler(
       })
     );
 
+    const day0 = dayISO[0]!;
+    const cashStart = portfolio
+      .filter((lot) => lot.purchaseDate > day0)
+      .reduce((sum, lot) => sum + lot.buyPrice * lot.shares, 0);
+
+    const holdingsStart = portfolio
+      .filter((lot) => lot.purchaseDate <= day0)
+      .reduce((sum, lot) => {
+        const open = symHist[lot.symbol].get(day0);
+        return open ? sum + open * lot.shares : sum;
+      }, 0);
+
+    const capitalStart = cashStart + holdingsStart;
+
+    /* ----- build a true “total value” sparkline --------------------------- */
     const sparkline: number[] = [];
 
     for (const iso of dayISO) {
-      let gainToday = 0;
-
+      /* 1. value of holdings owned *on that day* */
+      let holdings = 0;
       portfolio.forEach((lot) => {
-        if (iso < lot.purchaseDate) return; // lot not owned yet
-
+        if (iso < lot.purchaseDate) return;
         const open = symHist[lot.symbol].get(iso);
-        if (open === undefined) return; // market closed (holiday) → skip
-
-        const lotGain = (open - lot.buyPrice) * lot.shares;
-        gainToday += lotGain;
+        if (open !== undefined) holdings += open * lot.shares;
       });
 
-      sparkline.push(+gainToday.toFixed(2)); // round to cents
+      /* 2. remaining cash (cashStart minus what you’ve already spent) */
+      const spentSoFar = portfolio
+        .filter((lot) => lot.purchaseDate > day0 && lot.purchaseDate <= iso)
+        .reduce((s, lot) => s + lot.buyPrice * lot.shares, 0);
+
+      const cash = cashStart - spentSoFar;
+
+      sparkline.push(+(holdings + cash).toFixed(2));
     }
 
     /* ----- stock-level details (unchanged from before) ----- */
