@@ -857,6 +857,38 @@ body::before {
   margin-bottom: 2px;
   box-shadow: 0 2px 4px var(--shadow);
 }
+.stock-row-container-head {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  gap: 6px;
+  min-width: 50%;
+  width: auto;
+  max-width: 100%;
+  background: #046328;
+  border-radius: 10px;
+  margin-bottom: 2px;
+  box-shadow: 0 2px 4px var(--shadow);
+}
+[data-theme="dark"] .stock-row-container-head {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  gap: 6px;
+  min-width: 50%;
+  width: auto;
+  max-width: 100%;
+  background: #08a143;
+  border-radius: 10px;
+  margin-bottom: 2px;
+  box-shadow: 0 2px 4px var(--shadow);
+}
 
 .ticker-box {
   flex: 0 0 auto;

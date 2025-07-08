@@ -14,6 +14,7 @@ import {
   SharePos,
   ShareCount,
 } from "@/lib/portfolio";
+import { getSymbolTotalReturns } from "@/lib/portfolio";
 
 /* ───── portfolio ───── */
 const portfolio: SharePos[] = [
@@ -94,13 +95,7 @@ const portfolio: SharePos[] = [
     purchaseDate: "2024-07-12",
     reason: "NA",
   },
-  {
-    symbol: "INTC",
-    shares: 47,
-    buyPrice: 1.0,
-    purchaseDate: "2024-12-20",
-    reason: "NA",
-  },
+
   {
     symbol: "LCID",
     shares: 100,
@@ -138,10 +133,24 @@ const portfolio: SharePos[] = [
   },
   {
     symbol: "MNKD",
-    shares: 240,
-    buyPrice: 1,
-    purchaseDate: "2024-12-20",
+    shares: 100,
+    buyPrice: 4.7,
+    purchaseDate: "2025-04-28",
     reason: "inhaleable insulin?",
+  },
+  {
+    symbol: "MNKD",
+    shares: 40,
+    buyPrice: 4.71,
+    purchaseDate: "2025-04-28",
+    reason: "NA",
+  },
+  {
+    symbol: "MNKD",
+    shares: 100,
+    buyPrice: 4.7,
+    purchaseDate: "2025-04-28",
+    reason: "NA",
   },
   {
     symbol: "NVDA",
@@ -204,7 +213,7 @@ const portfolio: SharePos[] = [
     shares: 40,
     buyPrice: 7.94,
     purchaseDate: "2025-05-01",
-    reason: "terrible leadership should be printing",
+    reason: "terrible leadership, but plz print",
   },
   {
     symbol: "SNAP",
@@ -334,7 +343,7 @@ export default async function handler(
       }, 0);
 
     const capitalStart = cashStart + holdingsStart;
-
+    const returns = await getSymbolTotalReturns(portfolio);
     /* ----- build a true “total value” sparkline --------------------------- */
     const sparkline: number[] = [];
 
@@ -357,17 +366,47 @@ export default async function handler(
       sparkline.push(+(holdings + cash).toFixed(2));
     }
 
-    /* ----- stock-level details (unchanged from before) ----- */
-    const details = portfolio.map((lot, i) => {
-      const q = quotes[i];
+    type Agg = { costBasis: number; shares: number; reasons: Set<string> };
+    const agg = new Map<string, Agg>();
+
+    portfolio.forEach((lot) => {
+      const a = agg.get(lot.symbol) ?? {
+        costBasis: 0,
+        shares: 0,
+        reasons: new Set<string>(),
+      };
+      a.costBasis += lot.buyPrice * lot.shares; // Σ buyPrice × shares
+      a.shares += lot.shares; // Σ shares
+      if (lot.reason && lot.reason !== "NA") a.reasons.add(lot.reason);
+      agg.set(lot.symbol, a);
+    });
+
+    /** step 2 – handy look-up maps */
+    const quoteMap = new Map<
+      string,
+      Awaited<ReturnType<typeof yahooFinance.quote>>
+    >();
+    quotes.forEach((q) => quoteMap.set(q.symbol, q));
+
+    const weightMap = new Map(weights.map((w) => [w.symbol, w.weight]));
+
+    /** step 3 – final details array, one row per ticker */
+    const details = Array.from(agg.entries()).map(([symbol, a]) => {
+      const q = quoteMap.get(symbol);
+      const price = q?.regularMarketPrice ?? 0;
+
+      const valueNow = price * a.shares;
+      const totalRet =
+        a.costBasis === 0 ? 0 : ((valueNow - a.costBasis) / a.costBasis) * 100;
+
       return {
-        symbol: lot.symbol,
-        price: (q?.regularMarketPrice ?? 0).toFixed(2),
+        symbol,
+        price: price.toFixed(2),
         dayReturn: (q?.regularMarketChangePercent ?? 0).toFixed(2),
-        weight: (
-          (weights.find((w) => w.symbol === lot.symbol)?.weight ?? 0) * 100
-        ).toFixed(2),
-        reason: lot.reason ?? "NA",
+        totalReturn: totalRet.toFixed(2), // ✅ correct now
+        weight: ((weightMap.get(symbol) ?? 0) * 100).toFixed(2),
+        reason: a.reasons.size ? Array.from(a.reasons).join(" / ") : "NA",
+        shares: a.shares, // optional extra
       };
     });
 

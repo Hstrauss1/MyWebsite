@@ -74,7 +74,7 @@ export default function PortfolioWidgetNo() {
   /* --- regular alpha (= excess total return) ----------------------------- */
   const portRet = portPct.at(-1) ?? 0;
   const spyRet = spyPct.at(-1) ?? 0;
-  const alpha = portRet - spyRet - 0.5;
+  const alpha = portRet - spyRet;
   const alphaPct = (alpha * 100).toFixed(2);
   const alphaUp = alpha >= 0;
 

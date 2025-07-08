@@ -53,3 +53,31 @@ export async function getPortfolioReturn(
 
   return weighted.reduce((s, v) => s + v, 0); // e.g. 1.24 → +1.24 %
 }
+
+export async function getSymbolTotalReturns(
+  positions: SharePos[]
+): Promise<{ symbol: string; totalReturn: number }[]> {
+  /* 1. aggregate cost basis & shares for each symbol */
+  const agg = new Map<string, { costBasis: number; shares: number }>();
+
+  positions.forEach((pos) => {
+    const a = agg.get(pos.symbol) ?? { costBasis: 0, shares: 0 };
+    a.costBasis += pos.buyPrice * pos.shares;
+    a.shares += pos.shares;
+    agg.set(pos.symbol, a);
+  });
+
+  /* 2. fetch one quote per symbol */
+  const symbols = Array.from(agg.keys());
+  const quotes = await Promise.all(symbols.map((s) => yahooFinance.quote(s)));
+
+  /* 3. calculate total return % for each symbol */
+  return symbols.map((sym, i) => {
+    const { costBasis, shares } = agg.get(sym)!;
+    const currentPrice = quotes[i].regularMarketPrice ?? 0;
+    const valueNow = currentPrice * shares;
+    const pct =
+      costBasis === 0 ? 0 : ((valueNow - costBasis) / costBasis) * 100;
+    return { symbol: sym, totalReturn: +pct.toFixed(2) };
+  });
+}

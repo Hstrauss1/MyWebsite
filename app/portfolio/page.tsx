@@ -1,3 +1,4 @@
+/* app/portfolio/page.tsx */
 "use client";
 
 import Link from "next/link";
@@ -5,13 +6,16 @@ import ThemeToggle from "@/components/ThemeToggle";
 import useSWR from "swr";
 import PortfolioWidgetNo from "@/components/portNo";
 
+/* ───────────── types ───────────── */
 type StockDetail = {
   symbol: string;
   price: string;
-  dayReturn: string;
-  weight: string;
+  dayReturn: string; // 1-day change %
+  totalReturn: string; // NEW: from purchase to today
+  weight: string; // % of portfolio
   reason?: string;
 };
+
 export default function StockListPage() {
   const { data, error } = useSWR("/api/portfolio", (url) =>
     fetch(url).then((r) => r.json())
@@ -19,26 +23,21 @@ export default function StockListPage() {
 
   const loading = !data && !error;
   const rawDetails: StockDetail[] = data?.details ?? [];
-  console.log("🔎 Raw Details from API:", rawDetails);
 
-  // Merge duplicates and sum weight
+  /* — optional merge pass (kept from your original) — */
   const symbolMap = new Map<string, StockDetail>();
-
   for (const stock of rawDetails) {
     const existing = symbolMap.get(stock.symbol);
-    console.log("🔎 Raw Details from API:", rawDetails);
     if (existing) {
-      // Accumulate valid reasons (not "NA")
-      const existingReasons =
-        existing.reason && existing.reason !== "NA"
-          ? existing.reason.split(" / ")
-          : [];
-
-      const newReasons =
-        stock.reason && stock.reason !== "NA" ? stock.reason.split(" / ") : [];
-
       const mergedReasons = Array.from(
-        new Set([...existingReasons, ...newReasons])
+        new Set([
+          ...(existing.reason && existing.reason !== "NA"
+            ? existing.reason.split(" / ")
+            : []),
+          ...(stock.reason && stock.reason !== "NA"
+            ? stock.reason.split(" / ")
+            : []),
+        ])
       );
 
       symbolMap.set(stock.symbol, {
@@ -46,20 +45,16 @@ export default function StockListPage() {
         weight: (
           parseFloat(existing.weight) + parseFloat(stock.weight)
         ).toFixed(2),
-        reason: mergedReasons.length > 0 ? mergedReasons.join(" / ") : "NA",
+        reason: mergedReasons.length ? mergedReasons.join(" / ") : "NA",
+        /* totalReturn already aggregated by backend, keep existing */
       });
     } else {
-      // Set reason only if valid, else default to "NA"
-      const reason =
-        stock.reason && stock.reason !== "NA" ? stock.reason : "NA";
-
       symbolMap.set(stock.symbol, {
         ...stock,
-        reason,
+        reason: stock.reason && stock.reason !== "NA" ? stock.reason : "NA",
       });
     }
   }
-
   const details = Array.from(symbolMap.values());
 
   return (
@@ -77,7 +72,7 @@ export default function StockListPage() {
           Portfolio Stocks
         </h1>
 
-        {/* loading or error */}
+        {/* loading / error */}
         {loading && (
           <p className="text-center text-gray-400 italic">Loading…</p>
         )}
@@ -85,55 +80,82 @@ export default function StockListPage() {
           <p className="text-center text-red-400">Error loading data.</p>
         )}
 
-        {/* flex row for stock cards */}
-        <div className="stock-row-container font-semibold bg-[#062940]">
+        {/* header row */}
+        <div className="stock-row-container-head font-semibold bg-[#062940]">
           <div className="ticker-box">
             <span className="ticker-text">Ticker</span>
           </div>
           <div className="stock-stats-row">
-            <div className="stat-item" style={{ width: "20%" }}>
+            <div className="stat-item" style={{ width: "15%" }}>
               Price
             </div>
-            <div className="stat-item" style={{ width: "20%" }}>
-              Return
+            <div className="stat-item" style={{ width: "15%" }}>
+              1-Day Return
             </div>
-            <div className="stat-item" style={{ width: "20%" }}>
+            <div className="stat-item" style={{ width: "15%" }}>
+              Total Return
+            </div>
+            <div className="stat-item" style={{ width: "15%" }}>
               Weight
             </div>
-            <div className="stat-item" style={{ width: "auto" }}>
+            <div className="stat-item" style={{ width: "15%" }}>
               Reason
             </div>
           </div>
         </div>
+
+        {/* data rows */}
         {!loading && !error && (
           <div className="flex flex-col gap-[100px] px-4">
             {details.map((stock) => {
-              const up = parseFloat(stock.dayReturn) >= 0;
+              const oneDayUp = parseFloat(stock.dayReturn) >= 0;
+              const totalUp = parseFloat(stock.totalReturn) >= 0;
 
               return (
                 <div key={stock.symbol} className="stock-row-container">
+                  {/* ticker column */}
                   <div className="ticker-box">
                     <span className="ticker-text">{stock.symbol}</span>
                   </div>
 
+                  {/* stat columns */}
                   <div className="stock-stats-row">
-                    <div className="stat-item" style={{ width: "20%" }}>
+                    {/* Price */}
+                    <div className="stat-item" style={{ width: "15%" }}>
                       ${stock.price}
                     </div>
+
+                    {/* 1-Day Return */}
                     <div
                       className="stat-item"
                       style={{
-                        width: "20%",
-                        color: up ? "#4ade80" : "#f87991", // Tailwind's green-400/red-400
+                        width: "15%",
+                        color: oneDayUp ? "#4ade80" : "#f87991",
                       }}
                     >
-                      {up ? "+" : ""}
+                      {oneDayUp ? "+" : ""}
                       {stock.dayReturn}%
                     </div>
-                    <div className="stat-item" style={{ width: "20%" }}>
+
+                    {/* Total Return */}
+                    <div
+                      className="stat-item"
+                      style={{
+                        width: "15%",
+                        color: totalUp ? "#4ade80" : "#f87991",
+                      }}
+                    >
+                      {totalUp ? "+" : ""}
+                      {stock.totalReturn}%
+                    </div>
+
+                    {/* Weight */}
+                    <div className="stat-item" style={{ width: "15%" }}>
                       {stock.weight}%
                     </div>
-                    <div className="stat-item" style={{ width: "auto" }}>
+
+                    {/* Reason */}
+                    <div className="stat-item" style={{ width: "15%" }}>
                       {stock.reason || "N/A"}
                     </div>
                   </div>
@@ -143,26 +165,9 @@ export default function StockListPage() {
           </div>
         )}
       </div>
-      <PortfolioWidgetNo />
-    </div>
-  );
-}
 
-function Stat({
-  label,
-  value,
-  valueColor = "text-white",
-}: {
-  label: string;
-  value: string;
-  valueColor?: string;
-}) {
-  return (
-    <div>
-      <p className="text-gray-400 uppercase tracking-wide text-xs mb-1">
-        {label}
-      </p>
-      <p className={`text-base font-medium ${valueColor}`}>{value}</p>
+      {/* optional widget */}
+      <PortfolioWidgetNo />
     </div>
   );
 }
