@@ -213,7 +213,7 @@ const portfolio: SharePos[] = [
     shares: 40,
     buyPrice: 7.94,
     purchaseDate: "2025-05-01",
-    reason: "terrible leadership, but plz print",
+    reason: "terrible leadership, but plz",
   },
   {
     symbol: "SNAP",
@@ -289,12 +289,22 @@ export default async function handler(
     );
 
     /* ----- weights & 1-day change ----- */
-    const weights = await sharesToWeights(
-      portfolio.map(({ symbol, shares }) => ({
+    const shareAgg = new Map<string, number>();
+    portfolio.forEach((lot) => {
+      shareAgg.set(lot.symbol, (shareAgg.get(lot.symbol) ?? 0) + lot.shares);
+    });
+    const positions: ShareCount[] = Array.from(
+      shareAgg,
+      ([symbol, shares]) => ({
         symbol,
         shares,
-      })) as ShareCount[]
+      })
     );
+
+    /* 2. accurate weights that sum to 1.0 */
+    const weights = await sharesToWeights(positions);
+
+    /* 3. portfolio’s 1-day change based on those weights */
     const changePercent = await getPortfolioReturn(weights);
 
     /* ----- generate sparkline points ----- */
