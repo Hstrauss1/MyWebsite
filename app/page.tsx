@@ -1,11 +1,13 @@
 import Link from "next/link";
 import ThemeToggle from "../components/ThemeToggle";
 import PortfolioWidget from "@/components/port";
+import { Analytics } from "@vercel/analytics/next";
 
 export default function Home() {
   return (
     <div className="relative min-h-screen bg-transparent overflow-visible">
       <ThemeToggle />
+      <Analytics />
       <div className="py-12">
         {/* Header Section */}
         <div className="main-content">
