@@ -262,7 +262,7 @@ const portfolio: SharePos[] = [
     shares: 400,
     buyPrice: 1.45,
     purchaseDate: "2025-04-09",
-    reason: "biotech gamble – averaged down",
+    reason: "NA",
   },
 ];
 
