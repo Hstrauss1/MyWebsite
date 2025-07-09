@@ -250,6 +250,20 @@ const portfolio: SharePos[] = [
     purchaseDate: "2025-06-24",
     reason: "maybe something",
   },
+  {
+    symbol: "BTAI",
+    shares: 200,
+    buyPrice: 8.14,
+    purchaseDate: "2025-04-09",
+    reason: "biotech gamble – early entry",
+  },
+  {
+    symbol: "BTAI",
+    shares: 400,
+    buyPrice: 1.45,
+    purchaseDate: "2025-04-09",
+    reason: "biotech gamble – averaged down",
+  },
 ];
 
 async function safeHistorical(
