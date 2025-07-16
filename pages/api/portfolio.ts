@@ -202,11 +202,18 @@ const portfolio: SharePos[] = [
     reason: "not sure",
   },
   {
-    symbol: "SLDE",
-    shares: 40,
-    buyPrice: 21.28,
-    purchaseDate: "2025-06-26",
-    reason: ">????",
+    symbol: "QS",
+    shares: 20,
+    buyPrice: 10.82,
+    purchaseDate: "2025-07-16",
+    reason: "NA",
+  },
+  {
+    symbol: "MENS",
+    shares: 19,
+    buyPrice: 12.09,
+    purchaseDate: "2025-07-16",
+    reason: "NA",
   },
   {
     symbol: "SNAP",
@@ -322,7 +329,7 @@ export default async function handler(
     const changePercent = await getPortfolioReturn(weights);
 
     /* ----- generate sparkline points ----- */
-    const days = lastBusinessDays(90); // 30 most-recent weekdays
+    const days = lastBusinessDays(90);
     const dayISO = days.map((d) => formatISO(d, { representation: "date" }));
 
     /* fetch history (once per symbol) that covers the full 30-day window */
