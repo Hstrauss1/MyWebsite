@@ -948,3 +948,45 @@ body::before {
 .chart-period-down {
   color: #b70000;
 }
+
+.math-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px var(--shadow);
+}
+
+.math-input {
+  padding: 8px 12px;
+  font-size: 16px;
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-family: "Lato", sans-serif;
+}
+
+.math-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-green);
+}
+
+.math-submit {
+  padding: 8px 16px;
+  background-color: var(--accent-green);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: "Lato", sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+.math-submit:hover {
+  background-color: var(--accent-secondary);
+}
