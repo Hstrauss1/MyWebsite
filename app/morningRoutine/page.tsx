@@ -64,6 +64,12 @@ export default function MorningRoutinePage() {
   const [mathInput, setMathInput] = React.useState("");
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const [feedback, setFeedback] = React.useState<string | null>(null);
+  const [mathScore, setMathScore] = React.useState(0);
+  const [mathAttempts, setMathAttempts] = React.useState(0);
+  const [sessionStartTime, setSessionStartTime] = React.useState<number | null>(
+    null
+  );
+  const [sessionSaved, setSessionSaved] = React.useState(false);
 
   const checkAnswer = () => {
     if (!math) return;
