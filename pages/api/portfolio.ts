@@ -180,20 +180,7 @@ const portfolio: SharePos[] = [
     purchaseDate: "2025-04-14",
     reason: "print city",
   },
-  {
-    symbol: "QMCO",
-    shares: 80,
-    buyPrice: 11.1,
-    purchaseDate: "2025-05-01",
-    reason: "meant to buy qualcomm",
-  },
-  {
-    symbol: "QMCO",
-    shares: 50,
-    buyPrice: 12,
-    purchaseDate: "2025-04-14",
-    reason: "NA",
-  },
+
   {
     symbol: "QS",
     shares: 60,
