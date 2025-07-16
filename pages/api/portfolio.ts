@@ -47,6 +47,13 @@ const portfolio: SharePos[] = [
     reason: "NA",
   },
   {
+    symbol: "BWXT",
+    shares: 5,
+    buyPrice: 138.74,
+    purchaseDate: "2025-07-16",
+    reason: "nuclear propulsion",
+  },
+  {
     symbol: "ABR",
     shares: 160,
     buyPrice: 13.75,
@@ -82,32 +89,11 @@ const portfolio: SharePos[] = [
     reason: "Equzi",
   },
   {
-    symbol: "INTC",
-    shares: 15,
-    buyPrice: 20.05,
-    purchaseDate: "2025-05-01",
-    reason: "terrible company",
-  },
-  {
-    symbol: "INTC",
-    shares: 20,
-    buyPrice: 20.89,
-    purchaseDate: "2024-08-02",
-    reason: "NA",
-  },
-  {
-    symbol: "INTC",
-    shares: 6,
-    buyPrice: 33.06,
-    purchaseDate: "2024-07-22",
-    reason: "NA",
-  },
-  {
-    symbol: "INTC",
-    shares: 6,
-    buyPrice: 34.63,
-    purchaseDate: "2024-07-12",
-    reason: "NA",
+    symbol: "RKLB",
+    shares: 24,
+    buyPrice: 47.2,
+    purchaseDate: "2025-07-16",
+    reason: "satellite hustle",
   },
 
   {
