@@ -33,6 +33,20 @@ const portfolio: SharePos[] = [
     reason: "NA",
   },
   {
+    symbol: "MNKD",
+    shares: 76,
+    buyPrice: 3.97,
+    purchaseDate: "2025-07-16",
+    reason: "NA",
+  },
+  {
+    symbol: "VOYG",
+    shares: 4,
+    buyPrice: 42.02,
+    purchaseDate: "2025-07-16",
+    reason: "NA",
+  },
+  {
     symbol: "ABR",
     shares: 160,
     buyPrice: 13.75,
