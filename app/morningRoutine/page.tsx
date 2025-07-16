@@ -210,7 +210,7 @@ export default function MorningRoutinePage() {
             </div>
             <div className="stock-stats-row">
               <div className="stat-item" style={{ width: "60%" }}>
-                "{quote.text}"
+                {`"${quote.text}"`}
               </div>
               <div className="stat-item" style={{ width: "20%" }}>
                 {quote.author}

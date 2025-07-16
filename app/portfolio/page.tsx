@@ -55,7 +55,10 @@ export default function StockListPage() {
       });
     }
   }
-  const details = Array.from(symbolMap.values());
+  const details = Array.from(symbolMap.values()).sort((a, b) => {
+    // Sort by weight percentage in descending order (highest weight first)
+    return parseFloat(b.weight) - parseFloat(a.weight);
+  });
 
   return (
     <div className="min-h-screen bg-neutral-900 text-white">
