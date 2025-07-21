@@ -26,8 +26,16 @@ export default function ProjectsPage() {
       link: "/projects/Author",
       isWide: true,
     },
+    {
+      title: "Pipelined ISA CPU",
+      description:
+        "A 5-stage pipelined CPU in Verilog supporting 12 ISA instructions.",
+      image: "/projects/pipeline.png",
+      link: "/projects/pipeline",
+      isWide: true,
+    },
     // Placeholder projects with technical icons
-    ...Array(6)
+    ...Array(5)
       .fill(null)
       .map((_, index) => ({
         title: "?",
