@@ -19,20 +19,6 @@ import { getSymbolTotalReturns } from "@/lib/portfolio";
 /* ───── portfolio ───── */
 const portfolio: SharePos[] = [
   {
-    symbol: "AAPL",
-    shares: 2,
-    buyPrice: 207,
-    purchaseDate: "2025-04-14",
-    reason: "an apple a day",
-  },
-  {
-    symbol: "AAPL",
-    shares: 4,
-    buyPrice: 176,
-    purchaseDate: "2025-04-07",
-    reason: "NA",
-  },
-  {
     symbol: "MNKD",
     shares: 76,
     buyPrice: 3.97,
@@ -75,13 +61,6 @@ const portfolio: SharePos[] = [
     reason: "altitutude",
   },
   {
-    symbol: "CRWV",
-    shares: 6,
-    buyPrice: 158.58,
-    purchaseDate: "2025-06-26",
-    reason: "gpt pick",
-  },
-  {
     symbol: "EQIX",
     shares: 1,
     buyPrice: 761.05,
@@ -95,7 +74,6 @@ const portfolio: SharePos[] = [
     purchaseDate: "2025-07-16",
     reason: "satellite hustle",
   },
-
   {
     symbol: "LCID",
     shares: 100,
@@ -125,13 +103,6 @@ const portfolio: SharePos[] = [
     reason: "ozempic",
   },
   {
-    symbol: "MENS",
-    shares: 50,
-    buyPrice: 9.5,
-    purchaseDate: "2025-06-26",
-    reason: "korean health care?",
-  },
-  {
     symbol: "MNKD",
     shares: 100,
     buyPrice: 4.7,
@@ -153,20 +124,6 @@ const portfolio: SharePos[] = [
     reason: "NA",
   },
   {
-    symbol: "NVDA",
-    shares: 7,
-    buyPrice: 88,
-    purchaseDate: "2025-04-07",
-    reason: "let the winner win",
-  },
-  {
-    symbol: "NVDA",
-    shares: 4,
-    buyPrice: 112,
-    purchaseDate: "2025-04-14",
-    reason: "NA",
-  },
-  {
     symbol: "ORCL",
     shares: 5,
     buyPrice: 232.5,
@@ -180,7 +137,6 @@ const portfolio: SharePos[] = [
     purchaseDate: "2025-04-14",
     reason: "print city",
   },
-
   {
     symbol: "QS",
     shares: 60,
@@ -192,13 +148,6 @@ const portfolio: SharePos[] = [
     symbol: "QS",
     shares: 20,
     buyPrice: 10.82,
-    purchaseDate: "2025-07-16",
-    reason: "NA",
-  },
-  {
-    symbol: "MENS",
-    shares: 19,
-    buyPrice: 12.09,
     purchaseDate: "2025-07-16",
     reason: "NA",
   },
@@ -222,13 +171,6 @@ const portfolio: SharePos[] = [
     buyPrice: 17.32,
     purchaseDate: "2025-04-28",
     reason: "great pick",
-  },
-  {
-    symbol: "TSM",
-    shares: 8,
-    buyPrice: 161,
-    purchaseDate: "2025-04-28",
-    reason: "winner onG",
   },
   {
     symbol: "TTAN",
@@ -256,6 +198,50 @@ const portfolio: SharePos[] = [
     shares: 400,
     buyPrice: 1.45,
     purchaseDate: "2025-04-09",
+    reason: "NA",
+  },
+
+  // New Transactions (Added)
+  {
+    symbol: "TLX",
+    shares: 20,
+    buyPrice: 11.96,
+    purchaseDate: "2025-08-06",
+    reason: "NA",
+  },
+  {
+    symbol: "LCID",
+    shares: 160,
+    buyPrice: 2.19,
+    purchaseDate: "2025-08-06",
+    reason: "NA",
+  },
+  {
+    symbol: "MNKD",
+    shares: 100,
+    buyPrice: 3.61,
+    purchaseDate: "2025-08-06",
+    reason: "NA",
+  },
+  {
+    symbol: "SNAP",
+    shares: 15,
+    buyPrice: 7.43,
+    purchaseDate: "2025-08-06",
+    reason: "NA",
+  },
+  {
+    symbol: "ORCL",
+    shares: 0.01026,
+    buyPrice: 243.52,
+    purchaseDate: "2025-07-24",
+    reason: "dividend reinvest",
+  },
+  {
+    symbol: "RKLB",
+    shares: 2,
+    buyPrice: 49.25,
+    purchaseDate: "2025-07-18",
     reason: "NA",
   },
 ];
