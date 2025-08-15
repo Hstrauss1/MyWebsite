@@ -3,12 +3,18 @@
 import useSWR from "swr";
 import Link from "next/link";
 
-/* --- helpers ------------------------------------------------------------- */
-const fetchJSON = (url: string) => fetch(url).then((r) => r.json());
+/* --- helpers: disable caching on fetch ---------------------------------- */
+const fetchJSON = (url: string) =>
+  fetch(url, { cache: "no-store", next: { revalidate: 0 } }).then((r) =>
+    r.json()
+  );
+
 const postJSON = <T,>(url: string, body: T) =>
   fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    cache: "no-store",
+    next: { revalidate: 0 },
     body: JSON.stringify(body),
   }).then((r) => r.json());
 
@@ -35,14 +41,24 @@ export default function PortfolioWidget() {
   const w = 825,
     h = 175;
 
+  /* SWR: disable client cache and auto revalidation */
+  const swrNoCache = {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 0,
+  } as const;
+
   const { data: portData, error: portErr } = useSWR(
     "/api/portfolio",
-    fetchJSON
+    fetchJSON,
+    swrNoCache
   );
 
   const { data: spyData, error: spyErr } = useSWR(
     portData ? ["/api/spy", portData.dayISO] : null,
-    ([url, dayISO]) => postJSON(url, { dayISO })
+    ([url, dayISO]) => postJSON(url, { dayISO }),
+    swrNoCache
   );
 
   if (portErr || spyErr)
