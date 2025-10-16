@@ -34,8 +34,15 @@ export default function ProjectsPage() {
       link: "/projects/pipeline",
       isWide: true,
     },
+    {
+      title: "This Website",
+      description: "This website!",
+      image: "/projects/website.png",
+      link: "/projects/website",
+      isWide: true,
+    },
     // Placeholder projects with technical icons
-    ...Array(5)
+    ...Array(4)
       .fill(null)
       .map((_, index) => ({
         title: "?",
