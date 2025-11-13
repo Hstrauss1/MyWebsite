@@ -95,7 +95,7 @@ export default function Home() {
           <div className="section">
             <h2 className="section-title">ABOUT</h2>
             <div className="about-content">
-              Im an Graduate Computer Engineering student with a passion for
+              Im a Graduate Computer Engineering student with a passion for
               low-level systems design, embedded programming, security, and
               statistics. I thrive on solving complex technical challenges and
               contributing to innovative, performance-driven projects. Im in
