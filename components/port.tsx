@@ -143,7 +143,9 @@ export default function PortfolioWidget() {
               {" "}
               PORTFOLIO PERFORMANCE{" "}
               <p className="performance-header-small-text">
-                May be skewed by recent trades and vercel caching.
+                May be skewed by recent trades and vercel caching. (I have
+                recently sold a large percentage do to uncertainty in the
+                market)
               </p>
             </p>
           </div>
