@@ -24,8 +24,8 @@ const MiniCard = ({ message }: { message: string }) => (
 
 /* --- main widget --------------------------------------------------------- */
 export default function PortfolioWidgetNo() {
-  const w = 825,
-    h = 175;
+  const w = 825;
+  const h = 175;
 
   const { data: portData, error: portErr } = useSWR(
     "/api/portfolio",
@@ -43,6 +43,7 @@ export default function PortfolioWidgetNo() {
         <MiniCard message="Error loading data, reload page." />
       </div>
     );
+
   if (!portData || !spyData)
     return (
       <div className="flex items-center justify-center min-h-screen bg-neutral-900">
@@ -51,11 +52,12 @@ export default function PortfolioWidgetNo() {
     );
 
   /* --- align by date & drop holidays ------------------------------------ */
-  const portValues: number[] = portData.sparkline; // total $ value
+  const portValues: number[] = portData.sparkline; // total $ value (should already include cash if backend does)
   const spyValues: (number | null)[] = spyData.prices; // null = holiday
 
   const alignedPort: number[] = [];
   const alignedSpy: number[] = [];
+
   spyValues.forEach((v, i) => {
     if (v != null) {
       alignedPort.push(portValues[i]);
@@ -63,29 +65,32 @@ export default function PortfolioWidgetNo() {
     }
   });
 
-  /* --- % return helpers -------------------------------------------------- */
-  const toPctSeries = (series: number[]) => {
-    const base = Math.max(series[0] ?? 1, 1e-6);
-    return series.map((v) => (v - base) / base);
-  };
-  const portPct = toPctSeries(alignedPort);
-  const spyPct = toPctSeries(alignedSpy);
+  /* --- compute returns directly from aligned series --------------------- */
+  let alphaPct = "0.00";
+  let alphaUp = true;
+  let ninetyPct = "0.00";
+  let ninetyUp = true;
 
-  /* --- regular alpha (= excess total return) ----------------------------- */
-  const portRet = portPct.at(-1) ?? 0;
-  const spyRet = spyPct.at(-1) ?? 0;
-  const alpha = portRet - spyRet;
-  const alphaPct = (alpha * 100).toFixed(2);
-  const alphaUp = alpha >= 0;
+  if (alignedPort.length >= 2 && alignedSpy.length >= 2) {
+    const p0 = alignedPort[0];
+    const pT = alignedPort[alignedPort.length - 1];
+    const s0 = alignedSpy[0];
+    const sT = alignedSpy[alignedSpy.length - 1];
 
-  /* --- day change & 90-day change --------------------------------------- */
+    const portfolioRet = p0 > 0 ? pT / p0 - 1 : 0;
+    const spyRet = s0 > 0 ? sT / s0 - 1 : 0;
+
+    const alpha = portfolioRet - spyRet;
+    alphaPct = (alpha * 100).toFixed(2);
+    alphaUp = alpha >= 0;
+
+    ninetyPct = (portfolioRet * 100).toFixed(2);
+    ninetyUp = parseFloat(ninetyPct) >= 0;
+  }
+
+  /* --- day change (from backend 1-day changePercent) -------------------- */
   const dayPct = (portData.changePercent ?? 0).toFixed(2);
   const dayUp = (portData.changePercent ?? 0) >= 0;
-  const ninetyPct = (
-    ((alignedPort.at(-1)! - alignedPort[0]) / alignedPort[0]) *
-    100
-  ).toFixed(2);
-  const ninetyUp = parseFloat(ninetyPct) >= 0;
 
   /* --- sparkline coordinate helpers ------------------------------------- */
   const normY = (vals: number[]) => {
@@ -93,15 +98,18 @@ export default function PortfolioWidgetNo() {
     const span = Math.max(...vals) - min || 1;
     return vals.map((v) => h - ((v - min) / span) * h);
   };
+
   const shift = 7; // subtle visual lift for portfolio
   const shiftd = -7;
+
   const spyY = normY(alignedSpy).map((y) => y - shiftd);
   const portY = normY(alignedPort).map((y) => y - shift);
 
   const pts = (ys: number[]) =>
     ys
       .map(
-        (y, i) => `${((i / (ys.length - 1)) * w).toFixed(2)},${y.toFixed(2)}`
+        (y, i) =>
+          `${((i / Math.max(ys.length - 1, 1)) * w).toFixed(2)},${y.toFixed(2)}`
       )
       .join(" ");
 
@@ -116,8 +124,7 @@ export default function PortfolioWidgetNo() {
         <div className="performance-card border border-gray-700 rounded bg-gray-800 w-[300px] relative">
           <div className="performance-header border-b border-gray-700 p-2 text-center text-xs tracking-wider">
             <p className="performance-header-text">
-              {" "}
-              PORTFOLIO PERFORMANCE{" "}
+              PORTFOLIO PERFORMANCE
               <p className="performance-header-small-text">
                 May be skewed by recent trades.
               </p>
@@ -152,6 +159,7 @@ export default function PortfolioWidgetNo() {
                 viewBox={`0 0 ${w} ${h}`}
                 className="absolute inset-0 w-full h-full"
               >
+                {/* SPY */}
                 <polyline
                   fill="none"
                   stroke="#3b02f6" /* SPY blue */
@@ -159,6 +167,7 @@ export default function PortfolioWidgetNo() {
                   opacity={0.5}
                   points={pts(spyY)}
                 />
+                {/* Portfolio */}
                 <polyline
                   fill="none"
                   stroke={ninetyUp ? "#4ade80" : "#f87171"} /* green/red */
@@ -168,7 +177,7 @@ export default function PortfolioWidgetNo() {
               </svg>
             </div>
 
-            {/* Regular alpha */}
+            {/* Alpha */}
             <div className="text-center mb-4">
               <p className="text-gray-400 text-xs mb-1">
                 ALPHA vs <span className="SP">S&amp;P</span> (90 d)

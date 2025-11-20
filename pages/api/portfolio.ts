@@ -1,12 +1,6 @@
 // pages/api/portfolio.ts
 import type { NextApiRequest, NextApiResponse } from "next";
-import {
-  parseISO,
-  formatISO,
-  subDays,
-  eachDayOfInterval,
-  isWeekend,
-} from "date-fns";
+import { parseISO, formatISO, subDays, isWeekend } from "date-fns";
 import yahooFinance from "yahoo-finance2";
 import {
   sharesToWeights,
@@ -16,7 +10,10 @@ import {
 } from "@/lib/portfolio";
 import { getSymbolTotalReturns } from "@/lib/portfolio";
 
-/* ───── portfolio ───── */
+/* ───── CASH BALANCE ───── */
+const cashBalance = 26700; // <-- your current cash included in portfolio value
+
+/* ───── CURRENT PORTFOLIO ───── */
 const portfolio: SharePos[] = [
   {
     symbol: "CNC",
@@ -146,6 +143,7 @@ const portfolio: SharePos[] = [
   },
 ];
 
+/* ---- safe wrapper ---- */
 async function safeHistorical(
   symbol: string,
   opts: Parameters<typeof yahooFinance.historical>[1]
@@ -153,36 +151,36 @@ async function safeHistorical(
   try {
     return await yahooFinance.historical(symbol, opts);
   } catch (e) {
-    console.warn(`⚠️  No historical data for ${symbol}`, (e as Error).message);
+    console.warn(`⚠️ No historical data for ${symbol}`, (e as Error).message);
     return [];
   }
 }
 
-/* Return the last N weekdays (Mon–Fri) as Date[] (oldest → newest) */
+/* ---- get last 90 business days ---- */
 function lastBusinessDays(n: number): Date[] {
   const days: Date[] = [];
   let d = new Date();
   d.setUTCHours(0, 0, 0, 0);
 
   while (days.length < n) {
-    if (!isWeekend(d)) days.unshift(new Date(d)); // oldest first
+    if (!isWeekend(d)) days.unshift(new Date(d));
     d = subDays(d, 1);
   }
   return days;
 }
 
-/* ───── main handler ───── */
+/* ---- API handler ---- */
 export default async function handler(
   _req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
-    /* ----- current quotes for details ----- */
+    /* ----- fetch quotes ----- */
     const quotes = await Promise.all(
       portfolio.map((p) => yahooFinance.quote(p.symbol))
     );
 
-    /* ----- weights & 1-day change ----- */
+    /* ----- group shares ----- */
     const shareAgg = new Map<string, number>();
     portfolio.forEach((lot) => {
       shareAgg.set(lot.symbol, (shareAgg.get(lot.symbol) ?? 0) + lot.shares);
@@ -195,17 +193,15 @@ export default async function handler(
       })
     );
 
-    /* 2. accurate weights that sum to 1.0 */
+    /* ----- for 1-day change ----- */
     const weights = await sharesToWeights(positions);
-
-    /* 3. portfolio’s 1-day change based on those weights */
     const changePercent = await getPortfolioReturn(weights);
 
-    /* ----- generate sparkline points ----- */
+    /* ----- 90-day sparkline days ----- */
     const days = lastBusinessDays(90);
     const dayISO = days.map((d) => formatISO(d, { representation: "date" }));
 
-    /* fetch history (once per symbol) that covers the full 30-day window */
+    /* ----- fetch historical data for each symbol ----- */
     const symHist: Record<string, Map<string, number>> = {};
     await Promise.all(
       [...new Set(portfolio.map((p) => p.symbol))].map(async (sym) => {
@@ -225,7 +221,6 @@ export default async function handler(
           interval: "1d",
         });
 
-        /* map YYYY-MM-DD → opening price */
         const m = new Map<string, number>();
         rows.forEach((r: any) =>
           m.set(r.date.toISOString().slice(0, 10), r.open ?? r.close)
@@ -234,42 +229,25 @@ export default async function handler(
       })
     );
 
-    const day0 = dayISO[0]!;
-    const cashStart = portfolio
-      .filter((lot) => lot.purchaseDate > day0)
-      .reduce((sum, lot) => sum + lot.buyPrice * lot.shares, 0);
-
-    const holdingsStart = portfolio
-      .filter((lot) => lot.purchaseDate <= day0)
-      .reduce((sum, lot) => {
-        const open = symHist[lot.symbol].get(day0);
-        return open ? sum + open * lot.shares : sum;
-      }, 0);
-
-    const capitalStart = cashStart + holdingsStart;
-    const returns = await getSymbolTotalReturns(portfolio);
-    /* ----- build a true “total value” sparkline --------------------------- */
-    const sparkline: number[] = [];
-
-    for (const iso of dayISO) {
-      /* 1. value of holdings owned *on that day* */
+    /* ----- sparkline including cash ----- */
+    const sparkline: number[] = dayISO.map((iso) => {
       let holdings = 0;
+
       portfolio.forEach((lot) => {
         if (iso < lot.purchaseDate) return;
-        const open = symHist[lot.symbol].get(iso);
-        if (open !== undefined) holdings += open * lot.shares;
+        const price = symHist[lot.symbol].get(iso);
+        if (price !== undefined) {
+          holdings += price * lot.shares;
+        }
       });
 
-      /* 2. remaining cash (cashStart minus what you’ve already spent) */
-      const spentSoFar = portfolio
-        .filter((lot) => lot.purchaseDate > day0 && lot.purchaseDate <= iso)
-        .reduce((s, lot) => s + lot.buyPrice * lot.shares, 0);
+      /* Add constant cash balance */
+      const totalValue = holdings + cashBalance;
 
-      const cash = cashStart - spentSoFar;
+      return +totalValue.toFixed(2);
+    });
 
-      sparkline.push(+(holdings + cash).toFixed(2));
-    }
-
+    /* ---- cost basis for current positions ---- */
     type Agg = { costBasis: number; shares: number; reasons: Set<string> };
     const agg = new Map<string, Agg>();
 
@@ -279,13 +257,12 @@ export default async function handler(
         shares: 0,
         reasons: new Set<string>(),
       };
-      a.costBasis += lot.buyPrice * lot.shares; // Σ buyPrice × shares
-      a.shares += lot.shares; // Σ shares
+      a.costBasis += lot.buyPrice * lot.shares;
+      a.shares += lot.shares;
       if (lot.reason && lot.reason !== "NA") a.reasons.add(lot.reason);
       agg.set(lot.symbol, a);
     });
 
-    /** step 2 – handy look-up maps */
     const quoteMap = new Map<
       string,
       Awaited<ReturnType<typeof yahooFinance.quote>>
@@ -294,7 +271,6 @@ export default async function handler(
 
     const weightMap = new Map(weights.map((w) => [w.symbol, w.weight]));
 
-    /** step 3 – final details array, one row per ticker */
     const details = Array.from(agg.entries()).map(([symbol, a]) => {
       const q = quoteMap.get(symbol);
       const price = q?.regularMarketPrice ?? 0;
@@ -307,18 +283,19 @@ export default async function handler(
         symbol,
         price: price.toFixed(2),
         dayReturn: (q?.regularMarketChangePercent ?? 0).toFixed(2),
-        totalReturn: totalRet.toFixed(2), // ✅ correct now
+        totalReturn: totalRet.toFixed(2),
         weight: ((weightMap.get(symbol) ?? 0) * 100).toFixed(2),
         reason: a.reasons.size ? Array.from(a.reasons).join(" / ") : "NA",
-        shares: a.shares, // optional extra
+        shares: a.shares,
       };
     });
 
     return res.status(200).json({
       changePercent,
-      sparkline,
       details,
-      dayISO, // ← add this to sync with SPY
+      sparkline,
+      dayISO,
+      cashBalance, // <-- send cash to frontend too
     });
   } catch (err) {
     console.error("❌ Portfolio API error:", err);

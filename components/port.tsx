@@ -38,10 +38,10 @@ const MiniCard = ({ message }: { message: string }) => (
 
 /* --- main widget --------------------------------------------------------- */
 export default function PortfolioWidget() {
-  const w = 825,
-    h = 175;
+  const w = 825;
+  const h = 175;
 
-  /* SWR: disable client cache and auto revalidation */
+  /* SWR settings to avoid caching */
   const swrNoCache = {
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -49,18 +49,21 @@ export default function PortfolioWidget() {
     dedupingInterval: 0,
   } as const;
 
+  /* ----- load portfolio data (with cash included) ----- */
   const { data: portData, error: portErr } = useSWR(
     "/api/portfolio",
     fetchJSON,
     swrNoCache
   );
 
+  /* ----- load SPY prices aligned with dayISO from portfolio ----- */
   const { data: spyData, error: spyErr } = useSWR(
     portData ? ["/api/spy", portData.dayISO] : null,
     ([url, dayISO]) => postJSON(url, { dayISO }),
     swrNoCache
   );
 
+  /* ----- loading and error handling ----- */
   if (portErr || spyErr)
     return (
       <div className="flex items-center justify-center min-h-screen bg-neutral-900">
@@ -74,12 +77,13 @@ export default function PortfolioWidget() {
       </div>
     );
 
-  /* --- align by date & drop holidays ------------------------------------ */
-  const portValues: number[] = portData.sparkline; // total $ value
-  const spyValues: (number | null)[] = spyData.prices; // null = holiday
+  /* ------ Align by date & drop holidays ------ */
+  const portValues: number[] = portData.sparkline; // includes cash
+  const spyValues: (number | null)[] = spyData.prices;
 
   const alignedPort: number[] = [];
   const alignedSpy: number[] = [];
+
   spyValues.forEach((v, i) => {
     if (v != null) {
       alignedPort.push(portValues[i]);
@@ -87,40 +91,46 @@ export default function PortfolioWidget() {
     }
   });
 
-  /* --- % return helpers -------------------------------------------------- */
-  const toPctSeries = (series: number[]) => {
-    const base = Math.max(series[0] ?? 1, 1e-6);
-    return series.map((v) => (v - base) / base);
-  };
-  const portPct = toPctSeries(alignedPort);
-  const spyPct = toPctSeries(alignedSpy);
+  /* ----- Start comparison at first day where portfolio > 0 ----- */
+  let firstIdx = alignedPort.findIndex((v) => v > 0);
+  if (firstIdx === -1) firstIdx = 0;
 
-  /* --- regular alpha (= excess total return) ----------------------------- */
-  const portRet = portPct.at(-1) ?? 0;
-  const spyRet = spyPct.at(-1) ?? 0;
-  const alpha = portRet - spyRet;
+  const portSeries = alignedPort.slice(firstIdx);
+  const spySeries = alignedSpy.slice(firstIdx);
+
+  /* ----- compute portfolio vs SPY return over the window ----- */
+  const p0 = portSeries[0];
+  const pT = portSeries.at(-1)!;
+  const s0 = spySeries[0];
+  const sT = spySeries.at(-1)!;
+
+  const portfolioReturn = pT / p0 - 1;
+  const spyReturn = sT / s0 - 1;
+
+  const alpha = portfolioReturn - spyReturn;
   const alphaPct = (alpha * 100).toFixed(2);
   const alphaUp = alpha >= 0;
 
-  /* --- day change & 90-day change --------------------------------------- */
-  const dayPct = (portData.changePercent ?? 0).toFixed(2);
-  const dayUp = (portData.changePercent ?? 0) >= 0;
-  const ninetyPct = (
-    ((alignedPort.at(-1)! - alignedPort[0]) / alignedPort[0]) *
-    100
-  ).toFixed(2);
+  /* ----- 90-day (window) return ----- */
+  const ninetyPct = (((pT - p0) / p0) * 100).toFixed(2);
   const ninetyUp = parseFloat(ninetyPct) >= 0;
 
-  /* --- sparkline coordinate helpers ------------------------------------- */
+  /* ----- Day change from backend ----- */
+  const dayPct = (portData.changePercent ?? 0).toFixed(2);
+  const dayUp = (portData.changePercent ?? 0) >= 0;
+
+  /* ----- sparkline coordinate helpers ----- */
   const normY = (vals: number[]) => {
     const min = Math.min(...vals);
     const span = Math.max(...vals) - min || 1;
     return vals.map((v) => h - ((v - min) / span) * h);
   };
-  const shift = 7; // subtle visual lift for portfolio
-  const shiftd = -7;
-  const spyY = normY(alignedSpy).map((y) => y - shiftd);
-  const portY = normY(alignedPort).map((y) => y - shift);
+
+  const shift = 7;
+  const shiftDown = -7;
+
+  const spyY = normY(spySeries).map((y) => y - shiftDown);
+  const portY = normY(portSeries).map((y) => y - shift);
 
   const pts = (ys: number[]) =>
     ys
@@ -129,7 +139,7 @@ export default function PortfolioWidget() {
       )
       .join(" ");
 
-  /* --- render ------------------------------------------------------------ */
+  /* ----- render widget ----- */
   return (
     <div className="flex items-center justify-center min-h-screen bg-neutral-900">
       <div className="bottom-section text-white">
@@ -140,12 +150,9 @@ export default function PortfolioWidget() {
         <div className="performance-card border border-gray-700 rounded bg-gray-800 w-[300px] relative">
           <div className="performance-header border-b border-gray-700 p-2 text-center text-xs tracking-wider">
             <p className="performance-header-text">
-              {" "}
-              PORTFOLIO PERFORMANCE{" "}
+              PORTFOLIO PERFORMANCE
               <p className="performance-header-small-text">
-                May be skewed by recent trades and vercel caching. (I have
-                recently sold a large percentage do to uncertainty in the
-                market)
+                90-day numbers now include cash for accurate performance.
               </p>
             </p>
           </div>
@@ -178,25 +185,30 @@ export default function PortfolioWidget() {
                 viewBox={`0 0 ${w} ${h}`}
                 className="absolute inset-0 w-full h-full"
               >
+                {/* SPY */}
                 <polyline
                   fill="none"
-                  stroke="#3b02f6" /* SPY blue */
+                  stroke="#3b02f6"
                   strokeWidth={2}
                   opacity={0.5}
                   points={pts(spyY)}
                 />
+
+                {/* PORTFOLIO */}
                 <polyline
                   fill="none"
-                  stroke={ninetyUp ? "#4ade80" : "#f87171"} /* green/red */
+                  stroke={ninetyUp ? "#4ade80" : "#f87171"}
                   strokeWidth={2}
                   points={pts(portY)}
                 />
               </svg>
             </div>
 
-            {/* Regular alpha */}
+            {/* Alpha */}
             <div className="text-center mb-4">
-              <p className="text-gray-400 text-xs mb-1">ALPHA vs S&P (90 d)</p>
+              <p className="text-gray-400 text-xs mb-1">
+                ALPHA vs S&P (window)
+              </p>
               <p className={alphaUp ? "chart-period-up" : "chart-period-down"}>
                 {alphaUp ? "+" : ""}
                 {alphaPct}%
