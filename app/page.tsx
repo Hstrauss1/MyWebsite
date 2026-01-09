@@ -197,7 +197,7 @@ export default function Home() {
         </div>
 
         {/* Bottom Section */}
-        <PortfolioWidget></PortfolioWidget>
+        {/*<PortfolioWidget></PortfolioWidget>*/}
       </div>
     </div>
   );
