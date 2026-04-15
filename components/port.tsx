@@ -101,23 +101,30 @@ export default function PortfolioWidget() {
 
   const portSeries = alignedPort.slice(firstIdx);
   const spySeries = alignedSpy.slice(firstIdx);
+  const hasChartData = portSeries.length >= 2 && spySeries.length >= 2;
 
   /* ----- compute portfolio vs SPY return over the window ----- */
-  const p0 = portSeries[0];
-  const pT = portSeries.at(-1)!;
-  const s0 = spySeries[0];
-  const sT = spySeries.at(-1)!;
+  let alphaPct = "0.00";
+  let alphaUp = true;
+  let ninetyPct = "0.00";
+  let ninetyUp = true;
 
-  const portfolioReturn = pT / p0 - 1;
-  const spyReturn = sT / s0 - 1;
+  if (hasChartData) {
+    const p0 = portSeries[0];
+    const pT = portSeries.at(-1)!;
+    const s0 = spySeries[0];
+    const sT = spySeries.at(-1)!;
 
-  const alpha = portfolioReturn - spyReturn;
-  const alphaPct = (alpha * 100).toFixed(2);
-  const alphaUp = alpha >= 0;
+    const portfolioReturn = p0 > 0 ? pT / p0 - 1 : 0;
+    const spyReturn = s0 > 0 ? sT / s0 - 1 : 0;
 
-  /* ----- 90-day (window) return ----- */
-  const ninetyPct = (((pT - p0) / p0) * 100).toFixed(2);
-  const ninetyUp = parseFloat(ninetyPct) >= 0;
+    const alpha = portfolioReturn - spyReturn;
+    alphaPct = (alpha * 100).toFixed(2);
+    alphaUp = alpha >= 0;
+
+    ninetyPct = (portfolioReturn * 100).toFixed(2);
+    ninetyUp = parseFloat(ninetyPct) >= 0;
+  }
 
   /* ----- Day change from backend ----- */
   const dayPct = (portData.changePercent ?? 0).toFixed(2);
@@ -133,13 +140,16 @@ export default function PortfolioWidget() {
   const shift = 7;
   const shiftDown = -7;
 
-  const spyY = normY(spySeries).map((y) => y - shiftDown);
-  const portY = normY(portSeries).map((y) => y - shift);
+  const spyY = hasChartData
+    ? normY(spySeries).map((y) => y - shiftDown)
+    : [];
+  const portY = hasChartData ? normY(portSeries).map((y) => y - shift) : [];
 
   const pts = (ys: number[]) =>
     ys
       .map(
-        (y, i) => `${((i / (ys.length - 1)) * w).toFixed(2)},${y.toFixed(2)}`
+        (y, i) =>
+          `${((i / Math.max(ys.length - 1, 1)) * w).toFixed(2)},${y.toFixed(2)}`
       )
       .join(" ");
 
@@ -185,27 +195,33 @@ export default function PortfolioWidget() {
                 </span>
               </div>
 
-              <svg
-                viewBox={`0 0 ${w} ${h}`}
-                className="absolute inset-0 w-full h-full"
-              >
-                {/* SPY */}
-                <polyline
-                  fill="none"
-                  stroke="#3b02f6"
-                  strokeWidth={2}
-                  opacity={0.5}
-                  points={pts(spyY)}
-                />
+              {hasChartData ? (
+                <svg
+                  viewBox={`0 0 ${w} ${h}`}
+                  className="absolute inset-0 w-full h-full"
+                >
+                  {/* SPY */}
+                  <polyline
+                    fill="none"
+                    stroke="#3b02f6"
+                    strokeWidth={2}
+                    opacity={0.5}
+                    points={pts(spyY)}
+                  />
 
-                {/* PORTFOLIO */}
-                <polyline
-                  fill="none"
-                  stroke={ninetyUp ? "#4ade80" : "#f87171"}
-                  strokeWidth={2}
-                  points={pts(portY)}
-                />
-              </svg>
+                  {/* PORTFOLIO */}
+                  <polyline
+                    fill="none"
+                    stroke={ninetyUp ? "#4ade80" : "#f87171"}
+                    strokeWidth={2}
+                    points={pts(portY)}
+                  />
+                </svg>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-center text-sm text-gray-400">
+                  Waiting for enough market data to draw the chart.
+                </div>
+              )}
             </div>
 
             {/* Alpha */}

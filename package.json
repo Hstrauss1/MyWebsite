@@ -20,7 +20,7 @@
     "simple-statistics": "^7.8.8",
     "swr": "^2.3.4",
     "three": "^0.178.0",
-    "yahoo-finance2": "^2.13.3"
+    "yahoo-finance2": "2.13.3"
   },
   "devDependencies": {
     "@types/node": "^20",
