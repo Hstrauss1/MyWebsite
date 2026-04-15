@@ -223,15 +223,21 @@ export default async function handler(
 
         const m = new Map<string, number>();
         rows.forEach((r: any) =>
-          m.set(r.date.toISOString().slice(0, 10), r.open ?? r.close)
+          m.set(r.date.toISOString().slice(0, 10), r.close ?? r.open)
         );
         symHist[sym] = m;
       })
     );
 
-    /* ----- sparkline including cash ----- */
+    /* ----- sparkline with dynamic cash ----- */
+    // Total capital = today's cash + all cost bases ever deployed
+    const totalCapital =
+      cashBalance +
+      portfolio.reduce((sum, lot) => sum + lot.buyPrice * lot.shares, 0);
+
     const sparkline: number[] = dayISO.map((iso) => {
       let holdings = 0;
+      let deployedCash = 0;
 
       portfolio.forEach((lot) => {
         if (iso < lot.purchaseDate) return;
@@ -239,10 +245,13 @@ export default async function handler(
         if (price !== undefined) {
           holdings += price * lot.shares;
         }
+        // cash deployed when this lot was purchased
+        deployedCash += lot.buyPrice * lot.shares;
       });
 
-      /* Add constant cash balance */
-      const totalValue = holdings + cashBalance;
+      // cash on hand = total capital minus whatever has been deployed so far
+      const cashOnHand = totalCapital - deployedCash;
+      const totalValue = holdings + cashOnHand;
 
       return +totalValue.toFixed(2);
     });

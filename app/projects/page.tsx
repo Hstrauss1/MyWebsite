@@ -41,6 +41,13 @@ export default function ProjectsPage() {
       link: "/projects/website",
       isWide: true,
     },
+    {
+      title: "Raspberry Pi Homelab",
+      description: "A self-hosted homelab running Pi-hole, Docker, and more on a Raspberry Pi 4.",
+      image: "/projects/raspi.png",
+      link: "/projects/raspi",
+      isWide: true,
+    },
     // Placeholder projects with technical icons
     ...Array(4)
       .fill(null)

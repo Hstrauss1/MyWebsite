@@ -15,6 +15,8 @@ export default async function handler(
     // Determine earliest and latest dates from the incoming dayISO
     const start = new Date(dayISO[0]);
     const end = new Date(dayISO[dayISO.length - 1]);
+    // period2 is exclusive in Yahoo Finance — add one day so the last date is included
+    end.setDate(end.getDate() + 1);
 
     const rows = await yahooFinance.historical("SPY", {
       period1: Math.floor(start.getTime() / 1000),

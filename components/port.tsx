@@ -5,9 +5,10 @@ import Link from "next/link";
 
 /* --- helpers: disable caching on fetch ---------------------------------- */
 const fetchJSON = (url: string) =>
-  fetch(url, { cache: "no-store", next: { revalidate: 0 } }).then((r) =>
-    r.json()
-  );
+  fetch(url, { cache: "no-store", next: { revalidate: 0 } }).then((r) => {
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r.json();
+  });
 
 const postJSON = <T,>(url: string, body: T) =>
   fetch(url, {
@@ -16,7 +17,10 @@ const postJSON = <T,>(url: string, body: T) =>
     cache: "no-store",
     next: { revalidate: 0 },
     body: JSON.stringify(body),
-  }).then((r) => r.json());
+  }).then((r) => {
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r.json();
+  });
 
 const MiniCard = ({ message }: { message: string }) => (
   <div className="bottom-section text-white">
