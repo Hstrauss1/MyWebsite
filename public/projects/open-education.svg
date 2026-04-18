@@ -2,19 +2,19 @@
   <!-- Background -->
   <rect width="336" height="155" fill="#f5eff0"/>
 
-  <!-- Logo icon - rounded square with gradient -->
   <defs>
-    <linearGradient id="oeGrad" x1="108" y1="27" x2="148" y2="128" gradientUnits="userSpaceOnUse">
+    <linearGradient id="oeGrad" x1="88" y1="35" x2="148" y2="120" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#b08a9a"/>
       <stop offset="100%" stop-color="#c9a0a0"/>
     </linearGradient>
   </defs>
-  <rect x="108" y="27" width="70" height="70" rx="16" fill="url(#oeGrad)"/>
+
+  <!-- Logo icon - rounded square -->
+  <rect x="68" y="35" width="80" height="80" rx="18" fill="url(#oeGrad)"/>
 
   <!-- "OE" text inside icon -->
-  <text x="143" y="72" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="middle">OE</text>
+  <text x="108" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="26" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="middle">OE</text>
 
-  <!-- "OpenEducation" label -->
-  <text x="185" y="62" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="600" fill="#b08a9a" text-anchor="start" dominant-baseline="middle" opacity="0.85">Open</text>
-  <text x="185" y="90" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="600" fill="#b08a9a" text-anchor="start" dominant-baseline="middle" opacity="0.85">Education</text>
+  <!-- "OpenEducation" single line -->
+  <text x="168" y="78" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="600" fill="#b08a9a" text-anchor="start" dominant-baseline="middle" opacity="0.85">OpenEducation</text>
 </svg>

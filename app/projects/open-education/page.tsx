@@ -16,7 +16,15 @@ export default function OpenEducationProject() {
           <img
             src="/projects/open-education.svg"
             alt="OpenEducation logo"
-            className="project-detail-image"
+            style={{
+              width: "100%",
+              maxWidth: "400px",
+              height: "auto",
+              display: "block",
+              margin: "0 auto 32px",
+              borderRadius: "10px",
+              border: "3px solid var(--border-color)",
+            }}
           />
 
           <div className="project-detail-description">
