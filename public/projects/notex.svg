@@ -1,0 +1,20 @@
+<svg width="336" height="155" viewBox="0 0 336 155" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="336" height="155" fill="#eef2f8"/>
+
+  <defs>
+    <linearGradient id="nxGrad" x1="88" y1="35" x2="148" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4a6fa5"/>
+      <stop offset="100%" stop-color="#7a9fd4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Logo icon - rounded square -->
+  <rect x="68" y="35" width="80" height="80" rx="18" fill="url(#nxGrad)"/>
+
+  <!-- "NX" text inside icon -->
+  <text x="108" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="26" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="middle">NX</text>
+
+  <!-- "NoteX" single line -->
+  <text x="168" y="78" font-family="system-ui, -apple-system, sans-serif" font-size="26" font-weight="600" fill="#4a6fa5" text-anchor="start" dominant-baseline="middle" opacity="0.85">NoteX</text>
+</svg>

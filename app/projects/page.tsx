@@ -55,6 +55,13 @@ export default function ProjectsPage() {
       link: "/projects/open-education",
       isWide: true,
     },
+    {
+      title: "NoteX",
+      description: "A points-based platform for sharing and discovering class notes with AI semantic search.",
+      image: "/projects/notex.svg",
+      link: "/projects/notex",
+      isWide: true,
+    },
     // Placeholder projects with technical icons
     ...Array(4)
       .fill(null)
