@@ -36,7 +36,7 @@ export default function OpenEducationProject() {
             <br />
             The AI backend runs on an AMD GPU cloud droplet hosting a local
             LLM. Few-shot prompt injection was used to tune and optimize the
-            model's response format, ensuring consistent, structured output for
+            model&apos;s response format, ensuring consistent, structured output for
             quiz and module generation.
             <br />
             <br />
