@@ -48,6 +48,13 @@ export default function ProjectsPage() {
       link: "/projects/raspi",
       isWide: true,
     },
+    {
+      title: "OpenEducation",
+      description: "AI-powered tutoring platform with adaptive quizzes and local LLM.",
+      image: "/projects/open-education.svg",
+      link: "/projects/open-education",
+      isWide: true,
+    },
     // Placeholder projects with technical icons
     ...Array(4)
       .fill(null)

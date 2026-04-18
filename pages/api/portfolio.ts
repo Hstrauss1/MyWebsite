@@ -2,13 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { parseISO, formatISO, subDays, isWeekend } from "date-fns";
 import yahooFinance from "yahoo-finance2";
-import {
-  sharesToWeights,
-  getPortfolioReturn,
-  SharePos,
-  ShareCount,
-} from "@/lib/portfolio";
-import { getSymbolTotalReturns } from "@/lib/portfolio";
+import type { SharePos, ShareCount } from "@/lib/portfolio";
 
 /* ───── CASH BALANCE ───── */
 const cashBalance = 26700; // <-- your current cash included in portfolio value
@@ -156,6 +150,15 @@ async function safeHistorical(
   }
 }
 
+async function safeQuote(symbol: string) {
+  try {
+    return await yahooFinance.quote(symbol);
+  } catch (e) {
+    console.warn(`⚠️ No quote data for ${symbol}`, (e as Error).message);
+    return null;
+  }
+}
+
 /* ---- get last 90 business days ---- */
 function lastBusinessDays(n: number): Date[] {
   const days: Date[] = [];
@@ -175,11 +178,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    /* ----- fetch quotes ----- */
-    const quotes = await Promise.all(
-      portfolio.map((p) => yahooFinance.quote(p.symbol))
-    );
-
     /* ----- group shares ----- */
     const shareAgg = new Map<string, number>();
     portfolio.forEach((lot) => {
@@ -193,16 +191,16 @@ export default async function handler(
       })
     );
 
-    /* ----- for 1-day change ----- */
-    const weights = await sharesToWeights(positions);
-    const changePercent = await getPortfolioReturn(weights);
-
     /* ----- 90-day sparkline days ----- */
     const days = lastBusinessDays(90);
     const dayISO = days.map((d) => formatISO(d, { representation: "date" }));
 
     /* ----- fetch historical data for each symbol ----- */
     const symHist: Record<string, Map<string, number>> = {};
+    const histFallbacks = new Map<
+      string,
+      { latestPrice: number | null; previousPrice: number | null }
+    >();
     await Promise.all(
       [...new Set(portfolio.map((p) => p.symbol))].map(async (sym) => {
         const earliestLot = portfolio
@@ -213,7 +211,7 @@ export default async function handler(
         const period1 = Math.floor(
           Math.min(earliestLot.getTime(), days[0].getTime()) / 1000
         );
-        const period2 = Math.floor(days.at(-1)!.getTime() / 1000);
+        const period2 = Math.floor(days.at(-1)!.getTime() / 1000) + 86400;
 
         const rows = await safeHistorical(sym, {
           period1,
@@ -222,12 +220,84 @@ export default async function handler(
         });
 
         const m = new Map<string, number>();
-        rows.forEach((r: any) =>
-          m.set(r.date.toISOString().slice(0, 10), r.close ?? r.open)
-        );
+        const priceSeries: { iso: string; price: number }[] = rows
+          .map((r: any) => ({
+            iso: r.date.toISOString().slice(0, 10),
+            price: r.close ?? r.open,
+          }))
+          .filter(
+            (
+              row: { iso: string; price: number | null | undefined }
+            ): row is {
+              iso: string;
+              price: number;
+            } => typeof row.price === "number" && Number.isFinite(row.price)
+          );
+
+        priceSeries.forEach((row) => m.set(row.iso, row.price));
         symHist[sym] = m;
+        histFallbacks.set(sym, {
+          latestPrice: priceSeries.at(-1)?.price ?? null,
+          previousPrice: priceSeries.at(-2)?.price ?? null,
+        });
       })
     );
+
+    const symbols = positions.map((p) => p.symbol);
+    const quotes = await Promise.all(symbols.map((symbol) => safeQuote(symbol)));
+    const quoteMap = new Map(
+      quotes
+        .filter((quote): quote is NonNullable<typeof quote> => quote !== null)
+        .map((quote) => [quote.symbol, quote])
+    );
+
+    const latestPriceFor = (symbol: string) => {
+      const quote = quoteMap.get(symbol);
+      return (
+        quote?.regularMarketPrice ?? histFallbacks.get(symbol)?.latestPrice ?? 0
+      );
+    };
+
+    const dayChangePercentFor = (symbol: string) => {
+      const quote = quoteMap.get(symbol);
+      if (typeof quote?.regularMarketChangePercent === "number") {
+        return quote.regularMarketChangePercent;
+      }
+
+      const fallback = histFallbacks.get(symbol);
+      const latest = fallback?.latestPrice ?? null;
+      const previous = fallback?.previousPrice ?? null;
+      if (latest == null || previous == null || previous === 0) return 0;
+      return ((latest - previous) / previous) * 100;
+    };
+
+    /* ----- for 1-day change ----- */
+    const values = positions.map(
+      (position) => latestPriceFor(position.symbol) * position.shares
+    );
+    const totalValue = values.reduce((sum, value) => sum + value, 0) || 1;
+    const weights = positions.map((position, index) => ({
+      symbol: position.symbol,
+      weight: values[index] / totalValue,
+    }));
+    const changePercent = weights.reduce(
+      (sum, weight) => sum + dayChangePercentFor(weight.symbol) * weight.weight,
+      0
+    );
+
+    const spyRows = await safeHistorical("SPY", {
+      period1: Math.floor(days[0].getTime() / 1000),
+      period2: Math.floor(days.at(-1)!.getTime() / 1000) + 86400,
+      interval: "1d",
+    });
+    const spyMap = new Map<string, number>();
+    spyRows.forEach((row: any) => {
+      spyMap.set(
+        row.date.toISOString().slice(0, 10),
+        row.close ?? row.open ?? null
+      );
+    });
+    const spyPrices = dayISO.map((iso) => spyMap.get(iso) ?? null);
 
     /* ----- sparkline with dynamic cash ----- */
     // Total capital = today's cash + all cost bases ever deployed
@@ -272,17 +342,10 @@ export default async function handler(
       agg.set(lot.symbol, a);
     });
 
-    const quoteMap = new Map<
-      string,
-      Awaited<ReturnType<typeof yahooFinance.quote>>
-    >();
-    quotes.forEach((q) => quoteMap.set(q.symbol, q));
-
     const weightMap = new Map(weights.map((w) => [w.symbol, w.weight]));
 
     const details = Array.from(agg.entries()).map(([symbol, a]) => {
-      const q = quoteMap.get(symbol);
-      const price = q?.regularMarketPrice ?? 0;
+      const price = latestPriceFor(symbol);
 
       const valueNow = price * a.shares;
       const totalRet =
@@ -291,7 +354,7 @@ export default async function handler(
       return {
         symbol,
         price: price.toFixed(2),
-        dayReturn: (q?.regularMarketChangePercent ?? 0).toFixed(2),
+        dayReturn: dayChangePercentFor(symbol).toFixed(2),
         totalReturn: totalRet.toFixed(2),
         weight: ((weightMap.get(symbol) ?? 0) * 100).toFixed(2),
         reason: a.reasons.size ? Array.from(a.reasons).join(" / ") : "NA",
@@ -303,6 +366,7 @@ export default async function handler(
       changePercent,
       details,
       sparkline,
+      spyPrices,
       dayISO,
       cashBalance, // <-- send cash to frontend too
     });

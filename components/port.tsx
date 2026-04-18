@@ -10,18 +10,6 @@ const fetchJSON = (url: string) =>
     return r.json();
   });
 
-const postJSON = <T,>(url: string, body: T) =>
-  fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    cache: "no-store",
-    next: { revalidate: 0 },
-    body: JSON.stringify(body),
-  }).then((r) => {
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return r.json();
-  });
-
 const MiniCard = ({ message }: { message: string }) => (
   <div className="bottom-section text-white">
     <div className="performance-title-container mb-2">
@@ -60,21 +48,14 @@ export default function PortfolioWidget() {
     swrNoCache
   );
 
-  /* ----- load SPY prices aligned with dayISO from portfolio ----- */
-  const { data: spyData, error: spyErr } = useSWR(
-    portData ? ["/api/spy", portData.dayISO] : null,
-    ([url, dayISO]) => postJSON(url, { dayISO }),
-    swrNoCache
-  );
-
   /* ----- loading and error handling ----- */
-  if (portErr || spyErr)
+  if (portErr)
     return (
       <div className="flex items-center justify-center min-h-screen bg-neutral-900">
         <MiniCard message="Error loading data, reload page." />
       </div>
     );
-  if (!portData || !spyData)
+  if (!portData)
     return (
       <div className="flex items-center justify-center min-h-screen bg-neutral-900">
         <MiniCard message="Loading…" />
@@ -83,17 +64,25 @@ export default function PortfolioWidget() {
 
   /* ------ Align by date & drop holidays ------ */
   const portValues: number[] = portData.sparkline; // includes cash
-  const spyValues: (number | null)[] = spyData.prices;
+  const spyValues: (number | null)[] | null = Array.isArray(portData.spyPrices)
+    ? portData.spyPrices
+    : null;
 
   const alignedPort: number[] = [];
   const alignedSpy: number[] = [];
 
-  spyValues.forEach((v, i) => {
-    if (v != null) {
-      alignedPort.push(portValues[i]);
-      alignedSpy.push(v);
-    }
-  });
+  if (spyValues) {
+    spyValues.forEach((v, i) => {
+      if (v != null) {
+        alignedPort.push(portValues[i]);
+        alignedSpy.push(v);
+      }
+    });
+  }
+
+  if (alignedPort.length === 0) {
+    alignedPort.push(...portValues);
+  }
 
   /* ----- Start comparison at first day where portfolio > 0 ----- */
   let firstIdx = alignedPort.findIndex((v) => v > 0);
@@ -101,10 +90,11 @@ export default function PortfolioWidget() {
 
   const portSeries = alignedPort.slice(firstIdx);
   const spySeries = alignedSpy.slice(firstIdx);
-  const hasChartData = portSeries.length >= 2 && spySeries.length >= 2;
+  const hasChartData = portSeries.length >= 2;
+  const hasSpyData = spySeries.length >= 2;
 
   /* ----- compute portfolio vs SPY return over the window ----- */
-  let alphaPct = "0.00";
+  let alphaPct = "N/A";
   let alphaUp = true;
   let ninetyPct = "0.00";
   let ninetyUp = true;
@@ -112,18 +102,19 @@ export default function PortfolioWidget() {
   if (hasChartData) {
     const p0 = portSeries[0];
     const pT = portSeries.at(-1)!;
-    const s0 = spySeries[0];
-    const sT = spySeries.at(-1)!;
 
     const portfolioReturn = p0 > 0 ? pT / p0 - 1 : 0;
-    const spyReturn = s0 > 0 ? sT / s0 - 1 : 0;
-
-    const alpha = portfolioReturn - spyReturn;
-    alphaPct = (alpha * 100).toFixed(2);
-    alphaUp = alpha >= 0;
-
     ninetyPct = (portfolioReturn * 100).toFixed(2);
     ninetyUp = parseFloat(ninetyPct) >= 0;
+
+    if (hasSpyData) {
+      const s0 = spySeries[0];
+      const sT = spySeries.at(-1)!;
+      const spyReturn = s0 > 0 ? sT / s0 - 1 : 0;
+      const alpha = portfolioReturn - spyReturn;
+      alphaPct = (alpha * 100).toFixed(2);
+      alphaUp = alpha >= 0;
+    }
   }
 
   /* ----- Day change from backend ----- */
@@ -140,7 +131,7 @@ export default function PortfolioWidget() {
   const shift = 7;
   const shiftDown = -7;
 
-  const spyY = hasChartData
+  const spyY = hasSpyData
     ? normY(spySeries).map((y) => y - shiftDown)
     : [];
   const portY = hasChartData ? normY(portSeries).map((y) => y - shift) : [];
@@ -200,14 +191,15 @@ export default function PortfolioWidget() {
                   viewBox={`0 0 ${w} ${h}`}
                   className="absolute inset-0 w-full h-full"
                 >
-                  {/* SPY */}
-                  <polyline
-                    fill="none"
-                    stroke="#3b02f6"
-                    strokeWidth={2}
-                    opacity={0.5}
-                    points={pts(spyY)}
-                  />
+                  {hasSpyData && (
+                    <polyline
+                      fill="none"
+                      stroke="#3b02f6"
+                      strokeWidth={2}
+                      opacity={0.5}
+                      points={pts(spyY)}
+                    />
+                  )}
 
                   {/* PORTFOLIO */}
                   <polyline
@@ -229,10 +221,14 @@ export default function PortfolioWidget() {
               <p className="text-gray-400 text-xs mb-1">
                 ALPHA vs S&P (window)
               </p>
-              <p className={alphaUp ? "chart-period-up" : "chart-period-down"}>
-                {alphaUp ? "+" : ""}
-                {alphaPct}%
-              </p>
+              {hasSpyData ? (
+                <p className={alphaUp ? "chart-period-up" : "chart-period-down"}>
+                  {alphaUp ? "+" : ""}
+                  {alphaPct}%
+                </p>
+              ) : (
+                <p className="text-gray-400">SPY unavailable</p>
+              )}
             </div>
 
             <Link href="/portfolio" className="details-button">
