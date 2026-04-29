@@ -177,10 +177,12 @@ export default function Home() {
 
           {/* Languages Section */}
           <div className="section">
-            <h2 className="section-title">LANGUAGES</h2>
+            <h2 className="section-title">LANGUAGES & TOOLS</h2>
             <div className="languages-content">
-              64x/32x Assembly, C++/C, Python, Verilog, TCL, CMake, Ink!, Rust,
-              JavaScript
+              Python, Rust, C++, C, Java, x86-64 Assembly, RISC-V, Verilog —
+              PyTorch, OpenCV, Scikit-learn, NumPy, Pandas, Stable Diffusion —
+              Vivado, Nsight, gdb, CMake, Git, Docker, Linux, OMNeT++, Qiskit,
+              Synopsys Custom Compiler, TCL
             </div>
           </div>
 
@@ -188,10 +190,11 @@ export default function Home() {
           <div className="section">
             <h2 className="section-title">RELEVANT COURSEWORK</h2>
             <div className="coursework-content">
-              Computer Architecture, Compilers, Digital IC Design, Artificial
-              Intelligence, Data Science and Machine Learning, Computer
-              Graphics, Computer Networks, Embedded Systems, Circuits, Physics,
-              Probability and Statistics, Data-Structures and Algos.
+              High Performance Computer Architecture, Advanced Computer
+              Architecture, Advanced OS, Advanced Algorithms, Machine Learning,
+              AI Image Compression, IC/ASIC Design, Compilers, Distributed
+              Systems, Computer Networks, Embedded Systems, Data Structures &
+              Algorithms, Probability and Statistics.
             </div>
           </div>
         </div>
