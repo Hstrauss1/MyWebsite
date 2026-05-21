@@ -127,7 +127,7 @@ export default function Home() {
                     style={{
                       maxWidth: "100%",
                       maxHeight: "100%",
-                      objectFit: "cover",
+                      objectFit: "contain",
                       display: "block",
                     }}
                   />

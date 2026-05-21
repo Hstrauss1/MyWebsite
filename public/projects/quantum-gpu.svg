@@ -13,5 +13,5 @@
   <rect x="656" y="422" width="118" height="28" rx="14" fill="#F0A6FF"/>
   <rect x="802" y="422" width="118" height="28" rx="14" fill="#8FB8FF"/>
   <text x="118" y="116" fill="#F5F2FF" font-family="Georgia, serif" font-size="42" font-weight="700">Quantum Circuit Simulation &amp; GPU Profiling</text>
-  <text x="118" y="530" fill="#BDB4E7" font-family="Arial, sans-serif" font-size="28">Benchmarking CPU/GPU backends, Nsight traces, occupancy, transfer overhead, memory behavior</text>
+  <text x="118" y="530" fill="#BDB4E7" font-family="Arial, sans-serif" font-size="28">Nsight profiling for quantum simulation workloads</text>
 </svg>
