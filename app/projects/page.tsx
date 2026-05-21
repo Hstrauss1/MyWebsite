@@ -4,6 +4,30 @@ import ThemeToggle from "../../components/ThemeToggle";
 export default function ProjectsPage() {
   const projects = [
     {
+      title: "MQA Accelerator Research",
+      description:
+        "Architecture research on KV-stationary attention dataflows, online softmax, and mixed-precision tradeoffs.",
+      image: "/projects/mqa.svg",
+      link: "/projects/mqa-attention",
+      isWide: true,
+    },
+    {
+      title: "Quantum GPU Profiling",
+      description:
+        "Benchmarking and profiling quantum simulation backends with Nsight-driven GPU performance analysis.",
+      image: "/projects/quantum-gpu.svg",
+      link: "/projects/quantum-profiling",
+      isWide: true,
+    },
+    {
+      title: "Pipelined ISA CPU",
+      description:
+        "A 5-stage pipelined CPU in Verilog with forwarding, hazards, and cycle-accurate verification.",
+      image: "/projects/pipeline.png",
+      link: "/projects/pipeline",
+      isWide: true,
+    },
+    {
       title: "AVSWU-Pack",
       description:
         "A block-chain integrated autonomous vehicle simulation platform.",
@@ -20,30 +44,9 @@ export default function ProjectsPage() {
       isWide: true,
     },
     {
-      title: "Author Attribution",
-      description: "A traditional ML approach to author identification.",
-      image: "/projects/author.png",
-      link: "/projects/Author",
-      isWide: true,
-    },
-    {
-      title: "Pipelined ISA CPU",
-      description:
-        "A 5-stage pipelined CPU in Verilog supporting 12 ISA instructions.",
-      image: "/projects/pipeline.png",
-      link: "/projects/pipeline",
-      isWide: true,
-    },
-    {
-      title: "This Website",
-      description: "This website!",
-      image: "/projects/website.png",
-      link: "/projects/website",
-      isWide: true,
-    },
-    {
       title: "Raspberry Pi Homelab",
-      description: "A self-hosted homelab running Pi-hole, Docker, and more on a Raspberry Pi 4.",
+      description:
+        "A self-hosted homelab for Linux administration, Docker services, networking, and automation experiments.",
       image: "/projects/raspi.png",
       link: "/projects/raspi",
       isWide: true,
@@ -62,16 +65,21 @@ export default function ProjectsPage() {
       link: "/projects/notex",
       isWide: true,
     },
-    // Placeholder projects with technical icons
-    ...Array(4)
-      .fill(null)
-      .map((_, index) => ({
-        title: "?",
-        description: "to be D",
-        image: "/projects/droids.png",
-        link: "/projects/sample",
-        isWide: true,
-      })),
+    {
+      title: "Author Attribution",
+      description: "A traditional ML approach to author identification.",
+      image: "/projects/author.png",
+      link: "/projects/Author",
+      isWide: true,
+    },
+    {
+      title: "This Website",
+      description:
+        "The portfolio site itself, rebuilt to present projects through a stronger systems-first narrative.",
+      image: "/projects/website.png",
+      link: "/projects/website",
+      isWide: true,
+    },
   ];
 
   return (
@@ -96,7 +104,11 @@ export default function ProjectsPage() {
                   key={index}
                   href={project.link}
                   className="project-card"
-                  style={index === 0 ? { backgroundColor: "#D5D7D4" } : {}}
+                  style={
+                    project.title === "AVSWU-Pack"
+                      ? { backgroundColor: "#D5D7D4" }
+                      : {}
+                  }
                 >
                   {project.image ? (
                     <img

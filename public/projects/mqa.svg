@@ -1,0 +1,19 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0E1A2B"/>
+  <rect x="64" y="72" width="1072" height="486" rx="28" fill="#132742" stroke="#365D8D" stroke-width="4"/>
+  <rect x="126" y="148" width="220" height="320" rx="20" fill="#1F3C63"/>
+  <rect x="490" y="148" width="220" height="320" rx="20" fill="#1F3C63"/>
+  <rect x="854" y="148" width="220" height="320" rx="20" fill="#1F3C63"/>
+  <rect x="176" y="198" width="120" height="32" rx="16" fill="#8FB8FF"/>
+  <rect x="540" y="198" width="120" height="32" rx="16" fill="#8FB8FF"/>
+  <rect x="904" y="198" width="120" height="32" rx="16" fill="#8FB8FF"/>
+  <rect x="176" y="274" width="120" height="120" rx="24" fill="#72E3C0"/>
+  <rect x="540" y="274" width="120" height="120" rx="24" fill="#72E3C0"/>
+  <rect x="904" y="274" width="120" height="120" rx="24" fill="#72E3C0"/>
+  <path d="M296 214H540" stroke="#8FB8FF" stroke-width="10" stroke-linecap="round"/>
+  <path d="M660 214H904" stroke="#8FB8FF" stroke-width="10" stroke-linecap="round"/>
+  <path d="M296 334H540" stroke="#72E3C0" stroke-width="10" stroke-linecap="round"/>
+  <path d="M660 334H904" stroke="#72E3C0" stroke-width="10" stroke-linecap="round"/>
+  <text x="124" y="112" fill="#E9F1FF" font-family="Georgia, serif" font-size="44" font-weight="700">Multi-Query Attention</text>
+  <text x="124" y="520" fill="#9EB7DA" font-family="Arial, sans-serif" font-size="28">KV-stationary dataflows, online softmax, mixed precision, cycle-level modeling</text>
+</svg>

@@ -22,8 +22,8 @@ export default function Home() {
             <div className="header-info">
               <h1 className="main-title">Hudson Strauss</h1>
               <p className="subtitle">
-                A Computer Engineer with a passion for understanding the{" "}
-                <em>core</em>.
+                A GPU performance and computer architecture engineer who likes
+                understanding the <em>core</em>.
               </p>
               <div className="social-links">
                 <a
@@ -95,11 +95,13 @@ export default function Home() {
           <div className="section">
             <h2 className="section-title">ABOUT</h2>
             <div className="about-content">
-              Im a Graduate Computer Engineering student with a passion for
-              low-level systems design, embedded programming, security, and
-              statistics. I thrive on solving complex technical challenges and
-              contributing to innovative, performance-driven projects. Im in
-              love with embracing challenging problems.
+              Im a graduate Computer Engineering student focused on GPU
+              performance, AI acceleration, and computer architecture. My work
+              lives at the boundary between systems and hardware: attention
+              dataflows, pipelined processors, simulation infrastructure, and
+              the tooling needed to explain where performance actually goes. I
+              like building things close to the machine and then reasoning
+              carefully about their bottlenecks.
             </div>
           </div>
 
@@ -107,50 +109,50 @@ export default function Home() {
           <div className="section">
             <h2 className="section-title">MY PROJECTS</h2>
             <div className="projects-scroll">
-              {/* AVSWU-Pack Project */}
-              <Link href="/projects/avswu-pack" className="project-card">
+              {/* MQA Accelerator Research */}
+              <Link href="/projects/mqa-attention" className="project-card">
                 <div
                   style={{
                     width: "100%",
                     height: "148px",
-                    backgroundColor: "#D5D7D4",
+                    backgroundColor: "#0E1A2B",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
                   <img
-                    src="/projects/av_green_s.png"
-                    alt="AVSWU-Pack Project"
+                    src="/projects/mqa.svg"
+                    alt="MQA Accelerator Research"
                     style={{
                       maxWidth: "100%",
                       maxHeight: "100%",
-                      objectFit: "contain",
+                      objectFit: "cover",
                       display: "block",
                     }}
                   />
                 </div>
                 <div className="project-bottom">
-                  <div className="project-title">AVSWU-Pack</div>
+                  <div className="project-title">MQA Accelerator Research</div>
                   <div className="project-description">
-                    A block-chain integrated autonomous vehicle simulation
-                    platform.
+                    KV-stationary attention dataflows, online softmax, and
+                    mixed-precision accelerator modeling.
                   </div>
                 </div>
               </Link>
 
-              {/* 8X8 Project */}
-              <Link href="/projects/8x8" className="project-card">
+              {/* Pipelined CPU Project */}
+              <Link href="/projects/pipeline" className="project-card">
                 <div
                   style={{
-                    width: "100%", // or set fixed width/height if needed
-                    height: "200px", // or whatever height you want the image section to be
+                    width: "100%",
+                    height: "200px",
                     overflow: "hidden",
                   }}
                 >
                   <img
-                    src="/projects/shape_classifier.png"
-                    alt="Classifier"
+                    src="/projects/pipeline.png"
+                    alt="Pipelined CPU"
                     style={{
                       width: "100%",
                       height: "100%",
@@ -161,9 +163,10 @@ export default function Home() {
                 </div>
 
                 <div className="project-bottom">
-                  <div className="project-title-lato">8X8</div>
+                  <div className="project-title-lato">Pipelined CPU</div>
                   <div className="project-description-small">
-                    An 8x8 pixel shape classifier built at the transistor level.
+                    A custom 32-bit 5-stage Verilog CPU with hazards,
+                    forwarding, and cycle-accurate verification.
                   </div>
                 </div>
               </Link>
