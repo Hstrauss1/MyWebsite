@@ -209,6 +209,30 @@ body::before {
   align-items: flex-start;
 }
 
+.projects-scroll .project-card {
+  width: 326px;
+  height: 370px;
+  flex: 0 0 326px;
+}
+
+.projects-scroll .project-bottom {
+  height: auto;
+  min-height: 170px;
+  justify-content: flex-start;
+}
+
+.projects-scroll .project-title,
+.projects-scroll .project-title-lato {
+  font-size: 20px;
+  line-height: 1.18;
+}
+
+.projects-scroll .project-description,
+.projects-scroll .project-description-small {
+  font-size: 15px;
+  line-height: 1.25;
+}
+
 .project-card {
   display: flex;
   width: 326px;

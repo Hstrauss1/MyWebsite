@@ -135,8 +135,8 @@ export default function Home() {
                 <div className="project-bottom">
                   <div className="project-title">MQA Accelerator Research</div>
                   <div className="project-description">
-                    KV-stationary attention dataflows, online softmax, and
-                    mixed-precision accelerator modeling.
+                    KV-stationary attention dataflows and mixed-precision
+                    accelerator modeling.
                   </div>
                 </div>
               </Link>
