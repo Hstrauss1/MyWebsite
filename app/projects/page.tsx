@@ -74,8 +74,7 @@ export default function ProjectsPage() {
     },
     {
       title: "This Website",
-      description:
-        "The portfolio site itself, rebuilt to present projects through a stronger systems-first narrative.",
+      description: "The repo behind this personal website and project archive.",
       image: "/projects/website.png",
       link: "/projects/website",
       isWide: true,
