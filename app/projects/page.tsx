@@ -127,8 +127,8 @@ export default function ProjectsPage() {
                   ) : (
                     <div
                       style={{
-                        width: "326px",
-                        height: "155px",
+                        width: "100%",
+                        height: "180px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
