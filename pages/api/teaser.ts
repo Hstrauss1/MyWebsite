@@ -196,14 +196,6 @@ const teasers: TeaserItem[] = [
     category: "Lateral Thinking",
   },
   {
-    title: "The Man in the Elevator",
-    prompt:
-      "A man lives on the 30th floor but only takes the elevator to the 20th floor, then walks the rest. On rainy days, he takes it all the way up. Why?",
-    answer:
-      "He's too short to reach the button for the 30th floor, but can reach it with an umbrella on rainy days.",
-    category: "Lateral Thinking",
-  },
-  {
     title: "The Backwards Man",
     prompt:
       "A man pushes his car to a hotel and tells the owner he's bankrupt. What happened?",
@@ -584,7 +576,7 @@ const teasers: TeaserItem[] = [
     title: "The Calendar Conundrum",
     prompt: "If today is Monday, what day will it be 100 days from now?",
     answer:
-      "Tuesday. 100 ÷ 7 = 14 remainder 2. So 100 days = 14 weeks + 2 days. Monday + 2 days = Wednesday. Wait, let me recalculate: it's actually Tuesday!",
+      "Wednesday. 100 ÷ 7 = 14 remainder 2, so 100 days = 14 weeks + 2 days. Monday + 2 days = Wednesday.",
     category: "Calendar",
   },
   {

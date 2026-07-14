@@ -305,16 +305,23 @@ export default async function handler(
       cashBalance +
       portfolio.reduce((sum, lot) => sum + lot.buyPrice * lot.shares, 0);
 
+    // Carry the last-known price forward so market holidays / missing bars
+    // don't drop a held lot's value while still subtracting its cost from cash
+    // (which used to crater the whole line to ~cash on every holiday).
+    const lastKnownPrice = new Map<string, number>();
+
     const sparkline: number[] = dayISO.map((iso) => {
       let holdings = 0;
       let deployedCash = 0;
 
       portfolio.forEach((lot) => {
         if (iso < lot.purchaseDate) return;
-        const price = symHist[lot.symbol].get(iso);
-        if (price !== undefined) {
-          holdings += price * lot.shares;
-        }
+        const price =
+          symHist[lot.symbol].get(iso) ??
+          lastKnownPrice.get(lot.symbol) ??
+          lot.buyPrice; // no data yet → value at cost basis
+        lastKnownPrice.set(lot.symbol, price);
+        holdings += price * lot.shares;
         // cash deployed when this lot was purchased
         deployedCash += lot.buyPrice * lot.shares;
       });
@@ -325,6 +332,13 @@ export default async function handler(
 
       return +totalValue.toFixed(2);
     });
+
+    // Rebase to a base-100 index so the chart shape / returns are preserved
+    // but the absolute portfolio value (holdings + cash) is never disclosed.
+    const sparkBase = sparkline.find((v) => v > 0) ?? 1;
+    const sparklineIndex = sparkline.map(
+      (v) => +((v / sparkBase) * 100).toFixed(4)
+    );
 
     /* ---- cost basis for current positions ---- */
     type Agg = { costBasis: number; shares: number; reasons: Set<string> };
@@ -358,17 +372,15 @@ export default async function handler(
         totalReturn: totalRet.toFixed(2),
         weight: ((weightMap.get(symbol) ?? 0) * 100).toFixed(2),
         reason: a.reasons.size ? Array.from(a.reasons).join(" / ") : "NA",
-        shares: a.shares,
       };
     });
 
     return res.status(200).json({
       changePercent,
       details,
-      sparkline,
+      sparkline: sparklineIndex, // base-100 index, no absolute $ disclosed
       spyPrices,
       dayISO,
-      cashBalance, // <-- send cash to frontend too
     });
   } catch (err) {
     console.error("❌ Portfolio API error:", err);

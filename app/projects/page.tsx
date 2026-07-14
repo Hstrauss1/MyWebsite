@@ -80,6 +80,13 @@ export default function ProjectsPage() {
       link: "/projects/website",
       isWide: true,
     },
+    {
+      title: "TBD",
+      description: "A new project in the works — check back soon.",
+      image: "",
+      link: "",
+      isWide: true,
+    },
   ];
 
   return (
@@ -99,18 +106,15 @@ export default function ProjectsPage() {
             <h2 className="section-title">MY PROJECTS</h2>
 
             <div className="projects-grid">
-              {projects.map((project) => (
-                <Link
-                  key={project.link}
-                  href={project.link}
-                  className="project-card"
-                  style={
-                    project.title === "AVSWU-Pack"
-                      ? { backgroundColor: "#D5D7D4" }
-                      : {}
-                  }
-                >
-                  {project.image ? (
+              {projects.map((project) => {
+                const cardStyle =
+                  project.title === "AVSWU-Pack"
+                    ? { backgroundColor: "#D5D7D4" }
+                    : {};
+
+                const cardBody = (
+                  <>
+                    {project.image ? (
                     <Image
                       src={project.image}
                       alt={project.title}
@@ -156,14 +160,35 @@ export default function ProjectsPage() {
                       </svg>
                     </div>
                   )}
-                  <div className="project-bottom">
-                    <div className="project-title-lato">{project.title}</div>
-                    <div className="project-description-small">
-                      {project.description}
+                    <div className="project-bottom">
+                      <div className="project-title-lato">{project.title}</div>
+                      <div className="project-description-small">
+                        {project.description}
+                      </div>
                     </div>
+                  </>
+                );
+
+                return project.link ? (
+                  <Link
+                    key={project.title}
+                    href={project.link}
+                    className="project-card"
+                    style={cardStyle}
+                  >
+                    {cardBody}
+                  </Link>
+                ) : (
+                  <div
+                    key={project.title}
+                    className="project-card"
+                    style={{ ...cardStyle, cursor: "default" }}
+                    aria-disabled="true"
+                  >
+                    {cardBody}
                   </div>
-                </Link>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

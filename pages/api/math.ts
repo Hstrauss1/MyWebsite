@@ -141,11 +141,12 @@ function generateMixedOperations(rng: () => number): {
     },
     () => {
       const a = Math.floor(rng() * 15) + 5;
-      const b = Math.floor(rng() * 10) + 3;
       const c = Math.floor(rng() * 8) + 2;
+      const k = Math.floor(rng() * 10) + 3;
+      const b = c * k; // keep a × b ÷ c an exact integer
       return {
         question: `${a} × ${b} ÷ ${c}`,
-        answer: Math.floor((a * b) / c),
+        answer: a * k,
       };
     },
     () => {

@@ -66,59 +66,39 @@ function calculateStreak(sessions: MathSession[]): {
 } {
   if (sessions.length === 0) return { current: 0, longest: 0 };
 
-  const sortedSessions = sessions.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  const MS_PER_DAY = 1000 * 60 * 60 * 24;
+  const dayNumber = (iso: string) => Math.floor(new Date(iso).getTime() / MS_PER_DAY);
+
+  // Collapse to unique calendar days (multiple sessions/day = one day), ascending
+  const uniqueDays = Array.from(new Set(sessions.map((s) => dayNumber(s.date)))).sort(
+    (a, b) => a - b
   );
 
-  let currentStreak = 0;
-  let longestStreak = 0;
-  let tempStreak = 0;
-  let lastDate = new Date();
-
-  // Calculate current streak (consecutive days from today backwards)
-  for (const session of sortedSessions) {
-    const sessionDate = new Date(session.date);
-    const daysDiff = Math.floor(
-      (lastDate.getTime() - sessionDate.getTime()) / (1000 * 60 * 60 * 24)
-    );
-
-    if (daysDiff <= 1 && currentStreak === 0) {
-      currentStreak = 1;
-      tempStreak = 1;
-    } else if (daysDiff === 1) {
-      currentStreak++;
-      tempStreak++;
+  // Longest run of consecutive days
+  let longest = 1;
+  let run = 1;
+  for (let i = 1; i < uniqueDays.length; i++) {
+    if (uniqueDays[i] - uniqueDays[i - 1] === 1) {
+      run++;
+      longest = Math.max(longest, run);
     } else {
-      break;
-    }
-    lastDate = sessionDate;
-  }
-
-  // Calculate longest streak
-  const dailySessions = sessions.reduce((acc, session) => {
-    const date = session.date;
-    if (!acc[date]) acc[date] = [];
-    acc[date].push(session);
-    return acc;
-  }, {} as { [date: string]: MathSession[] });
-
-  const dates = Object.keys(dailySessions).sort();
-  let streak = 0;
-
-  for (let i = 0; i < dates.length; i++) {
-    if (
-      i === 0 ||
-      new Date(dates[i]).getTime() - new Date(dates[i - 1]).getTime() ===
-        24 * 60 * 60 * 1000
-    ) {
-      streak++;
-      longestStreak = Math.max(longestStreak, streak);
-    } else {
-      streak = 1;
+      run = 1;
     }
   }
 
-  return { current: currentStreak, longest: longestStreak };
+  // Current streak: consecutive days ending today or yesterday
+  const todayNum = Math.floor(Date.now() / MS_PER_DAY);
+  const lastDay = uniqueDays[uniqueDays.length - 1];
+  let current = 0;
+  if (todayNum - lastDay <= 1) {
+    current = 1;
+    for (let i = uniqueDays.length - 1; i > 0; i--) {
+      if (uniqueDays[i] - uniqueDays[i - 1] === 1) current++;
+      else break;
+    }
+  }
+
+  return { current, longest };
 }
 
 function generateMathStats(): MathStats {
@@ -218,8 +198,8 @@ function generateMathStats(): MathStats {
     }
   }
 
-  // Recent sessions (last 10)
-  const recentSessions = mathSessions
+  // Recent sessions (last 10) — copy first so we don't reorder the store
+  const recentSessions = [...mathSessions]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 10);
 

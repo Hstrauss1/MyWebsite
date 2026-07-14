@@ -125,12 +125,12 @@ export default function PortfolioWidgetNo() {
 
         <div className="performance-card border border-gray-700 rounded bg-gray-800 w-[300px] relative">
           <div className="performance-header border-b border-gray-700 p-2 text-center text-xs tracking-wider">
-            <p className="performance-header-text">
+            <div className="performance-header-text">
               PORTFOLIO PERFORMANCE
-              <p className="performance-header-small-text">
+              <div className="performance-header-small-text">
                 May be skewed by recent trades.
-              </p>
-            </p>
+              </div>
+            </div>
           </div>
 
           <div className="performance-body p-4">
@@ -165,7 +165,7 @@ export default function PortfolioWidgetNo() {
                 {alignedSpy.length >= 2 && (
                   <polyline
                     fill="none"
-                    stroke="#3b02f6" /* SPY blue */
+                    stroke="#3b82f6" /* SPY blue */
                     strokeWidth={2}
                     opacity={0.5}
                     points={pts(spyY)}
