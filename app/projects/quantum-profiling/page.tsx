@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import ThemeToggle from "../../../components/ThemeToggle";
 
 export default function QuantumProfilingProject() {
@@ -6,7 +7,7 @@ export default function QuantumProfilingProject() {
     <div className="min-h-screen">
       <ThemeToggle />
       <div className="project-detail-container">
-        <Link href="/projects" className="back-button">
+        <Link href="/projects" className="back-button" aria-label="Back to projects">
           ←
         </Link>
 
@@ -15,9 +16,11 @@ export default function QuantumProfilingProject() {
             Quantum Circuit Simulation &amp; GPU Profiling
           </h1>
 
-          <img
+          <Image
             src="/projects/quantum-gpu.svg"
             alt="Quantum Circuit Simulation and GPU Profiling"
+            width={604}
+            height={432}
             className="project-detail-image"
           />
 
@@ -48,6 +51,7 @@ export default function QuantumProfilingProject() {
             href="https://github.com/Hstrauss1"
             className="project-link-button"
             target="_blank"
+            rel="noopener noreferrer"
           >
             GitHub Profile
           </a>

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface ProjectCardProps {
   title: string;
   description: string;
@@ -15,7 +17,13 @@ export default function ProjectCard({
     <div className="card project-card">
       <div className="project-image-container">
         {image ? (
-          <img src={image} alt={title} className="project-image" />
+          <Image
+            src={image}
+            alt={title}
+            width={159}
+            height={155}
+            className="project-image"
+          />
         ) : (
           <div className="project-placeholder">
             <svg

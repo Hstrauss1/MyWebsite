@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import ThemeToggle from "../../../components/ThemeToggle";
 
 export default function AVSHUPackProject() {
@@ -6,7 +7,7 @@ export default function AVSHUPackProject() {
     <div className="min-h-screen">
       <ThemeToggle />
       <div className="project-detail-container">
-        <Link href="/projects" className="back-button">
+        <Link href="/projects" className="back-button" aria-label="Back to projects">
           ←
         </Link>
 
@@ -15,9 +16,11 @@ export default function AVSHUPackProject() {
             Autonomous Vehicle Security through Blockchain
           </h1>
 
-          <img
+          <Image
             src="/projects/av_green_s.png"
             alt="AVSWU-Pack Project"
+            width={1112}
+            height={346}
             className="project-detail-image"
             style={{
               width: "1112px",
@@ -52,6 +55,7 @@ export default function AVSHUPackProject() {
             href="https://github.com/Hstrauss1/avswu-pack"
             className="project-link-button"
             target="_blank"
+            rel="noopener noreferrer"
           >
             Project Link
           </a>

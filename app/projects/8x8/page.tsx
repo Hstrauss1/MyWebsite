@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import ThemeToggle from "../../../components/ThemeToggle";
 
 export default function EightByEightProject() {
@@ -6,7 +7,7 @@ export default function EightByEightProject() {
     <div className="min-h-screen">
       <ThemeToggle />
       <div className="project-detail-container">
-        <Link href="/projects" className="back-button">
+        <Link href="/projects" className="back-button" aria-label="Back to projects">
           ←
         </Link>
 
@@ -15,9 +16,11 @@ export default function EightByEightProject() {
             8×8 Transistor-Level Shape Classifier
           </h1>
 
-          <img
+          <Image
             src="/projects/shape_classifier.png"
             alt="8X8 Project"
+            width={604}
+            height={432}
             className="project-detail-image"
           />
 
@@ -38,6 +41,7 @@ export default function EightByEightProject() {
             href="https://github.com/Hstrauss1/8by8-Shape-Transistor-Classifier"
             className="project-link-button"
             target="_blank"
+            rel="noopener noreferrer"
           >
             Project Link
           </a>

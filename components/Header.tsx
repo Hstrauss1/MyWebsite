@@ -1,10 +1,15 @@
+import Image from "next/image";
+
 export default function Header() {
   return (
     <header className="section">
       <div className="header-content">
-        <img
+        <Image
           src="https://cdn.builder.io/api/v1/assets/4ddf307fcad34eeba6506caa200cd3c7/figma-screenshot-de1130?format=webp&width=800"
           alt="Hudson Strauss"
+          width={120}
+          height={120}
+          unoptimized
           className="profile-photo"
         />
         <div className="header-info">

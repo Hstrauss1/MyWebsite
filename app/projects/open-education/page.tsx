@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import ThemeToggle from "../../../components/ThemeToggle";
 
 export default function OpenEducationProject() {
@@ -6,16 +7,18 @@ export default function OpenEducationProject() {
     <div className="min-h-screen">
       <ThemeToggle />
       <div className="project-detail-container">
-        <Link href="/projects" className="back-button">
+        <Link href="/projects" className="back-button" aria-label="Back to projects">
           ←
         </Link>
 
         <div style={{ textAlign: "center" }}>
           <h1 className="project-detail-title">OpenEducation</h1>
 
-          <img
+          <Image
             src="/projects/open-education.svg"
             alt="OpenEducation logo"
+            width={400}
+            height={225}
             style={{
               width: "100%",
               maxWidth: "400px",
@@ -56,6 +59,7 @@ export default function OpenEducationProject() {
             href="https://github.com/Hstrauss1/SmilingUnicorn"
             className="project-link-button"
             target="_blank"
+            rel="noopener noreferrer"
           >
             Project Link
           </a>

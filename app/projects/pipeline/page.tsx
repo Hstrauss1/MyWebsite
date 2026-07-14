@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import ThemeToggle from "../../../components/ThemeToggle";
 
 export default function pipelineCPU() {
@@ -6,16 +7,18 @@ export default function pipelineCPU() {
     <div className="min-h-screen">
       <ThemeToggle />
       <div className="project-detail-container">
-        <Link href="/projects" className="back-button">
+        <Link href="/projects" className="back-button" aria-label="Back to projects">
           ←
         </Link>
 
         <div style={{ textAlign: "center" }}>
           <h1 className="project-detail-title">Pipelined ISA CPU (Verilog)</h1>
 
-          <img
+          <Image
             src="/projects/pipeline.png"
-            alt="pipelineProject"
+            alt="Pipelined CPU schematic"
+            width={604}
+            height={432}
             className="project-detail-image"
           />
 
@@ -39,6 +42,7 @@ export default function pipelineCPU() {
             href="https://github.com/Hstrauss1/PipelinedCPU/tree/main"
             className="project-link-button"
             target="_blank"
+            rel="noopener noreferrer"
           >
             Project Link
           </a>

@@ -6,9 +6,12 @@ export default function ThemeToggle() {
 
   return (
     <button
+      type="button"
       className="theme-toggle"
       onClick={toggleTheme}
-      aria-label="Toggle theme"
+      aria-label={`Switch to ${isDark ? "light" : "dark"} theme`}
+      aria-pressed={isDark}
+      title={`Switch to ${isDark ? "light" : "dark"} theme`}
     >
       <svg
         className="theme-icon"

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import ThemeToggle from "../../components/ThemeToggle";
 
 export default function ProjectsPage() {
@@ -89,7 +90,7 @@ export default function ProjectsPage() {
           <Link
             href="/"
             className="back-button"
-            style={{ marginLeft: "80px", marginBottom: "50px" }}
+            aria-label="Back to home"
           >
             ←
           </Link>
@@ -98,9 +99,9 @@ export default function ProjectsPage() {
             <h2 className="section-title">MY PROJECTS</h2>
 
             <div className="projects-grid">
-              {projects.map((project, index) => (
+              {projects.map((project) => (
                 <Link
-                  key={index}
+                  key={project.link}
                   href={project.link}
                   className="project-card"
                   style={
@@ -110,9 +111,11 @@ export default function ProjectsPage() {
                   }
                 >
                   {project.image ? (
-                    <img
+                    <Image
                       src={project.image}
                       alt={project.title}
+                      width={640}
+                      height={360}
                       className={
                         project.isWide ? "project-image-large" : "project-image"
                       }

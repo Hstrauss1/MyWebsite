@@ -1,6 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
 import ThemeToggle from "../components/ThemeToggle";
-import PortfolioWidget from "@/components/port";
 import { Analytics } from "@vercel/analytics/next";
 
 export default function Home() {
@@ -13,10 +13,14 @@ export default function Home() {
         <div className="main-content">
           <div className="header-section">
             <div className="profile-photo-container">
-              <img
-                src="./images/IMG_5431.jpg"
+              <Image
+                src="/images/IMG_5431.jpg"
                 alt="Hudson Strauss"
                 className="profile-photo"
+                width={120}
+                height={120}
+                sizes="120px"
+                priority
               />
             </div>
             <div className="header-info">
@@ -31,6 +35,7 @@ export default function Home() {
                   className="social-link"
                   aria-label="LinkedIn"
                   target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <svg
                     width="24"
@@ -67,6 +72,7 @@ export default function Home() {
                   className="social-link"
                   aria-label="GitHub"
                   target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <svg
                     width="24"
@@ -95,7 +101,7 @@ export default function Home() {
           <div className="section">
             <h2 className="section-title">ABOUT</h2>
             <div className="about-content">
-              Im a graduate Computer Engineering student focused on GPU
+              I&apos;m a graduate Computer Engineering student focused on GPU
               performance, AI acceleration, and computer architecture. My work
               lives at the boundary between systems and hardware: attention
               dataflows, pipelined processors, simulation infrastructure, and
@@ -111,25 +117,13 @@ export default function Home() {
             <div className="projects-scroll">
               {/* MQA Accelerator Research */}
               <Link href="/projects/mqa-attention" className="project-card">
-                <div
-                  style={{
-                    width: "100%",
-                    height: "148px",
-                    backgroundColor: "#0E1A2B",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <img
+                <div className="project-image-frame project-image-frame-dark">
+                  <Image
                     src="/projects/mqa.svg"
                     alt="MQA Accelerator Research"
-                    style={{
-                      maxWidth: "100%",
-                      maxHeight: "100%",
-                      objectFit: "contain",
-                      display: "block",
-                    }}
+                    width={326}
+                    height={200}
+                    className="home-project-image contain"
                   />
                 </div>
                 <div className="project-bottom">
@@ -143,22 +137,13 @@ export default function Home() {
 
               {/* Pipelined CPU Project */}
               <Link href="/projects/pipeline" className="project-card">
-                <div
-                  style={{
-                    width: "100%",
-                    height: "200px",
-                    overflow: "hidden",
-                  }}
-                >
-                  <img
+                <div className="project-image-frame">
+                  <Image
                     src="/projects/pipeline.png"
                     alt="Pipelined CPU"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      display: "block",
-                    }}
+                    width={326}
+                    height={200}
+                    className="home-project-image cover"
                   />
                 </div>
 

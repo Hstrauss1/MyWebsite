@@ -15,6 +15,8 @@
 
   --tile-x: 200px;
   --tile: 300px;
+
+  color-scheme: light;
 }
 
 [data-theme="dark"] {
@@ -31,6 +33,8 @@
   --border-color: #80a84a;
   --shadow: rgba(8, 53, 86, 0.25);
   --profile-border: #a2d55d;
+
+  color-scheme: dark;
 }
 
 * {
@@ -39,12 +43,22 @@
   margin: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: "Lato", -apple-system, Roboto, Helvetica, sans-serif;
+  font-family: var(--font-lato), -apple-system, Roboto, Helvetica, sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
   transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+}
+
+:where(a, button, input, [tabindex]):focus-visible {
+  outline: 3px solid var(--accent-green);
+  outline-offset: 4px;
 }
 
 html[data-theme="dark"] {
@@ -81,7 +95,7 @@ body::before {
 }
 
 .section-title {
-  font-family: "Lato", monospace;
+  font-family: var(--font-lato), sans-serif;
   font-size: 20px;
   font-weight: 700;
   color: var(--text-muted);
@@ -106,7 +120,7 @@ body::before {
   gap: 34px;
   max-width: 1072px;
   margin: 0 auto;
-  padding: 10px;
+  padding: 10px clamp(18px, 4vw, 32px);
 }
 
 /* Header Styles */
@@ -139,23 +153,25 @@ body::before {
   flex-direction: column;
   gap: 6px;
   flex: 1;
+  min-width: 0;
 }
 
 .main-title {
-  font-family: "Geist Mono", monospace;
-  font-size: 40px;
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(34px, 4.2vw, 48px);
   font-weight: 700;
   color: var(--text-primary);
   line-height: normal;
 }
 
 .subtitle {
-  font-family: "Lato", sans-serif;
-  font-size: 24px;
+  font-family: var(--font-lato), sans-serif;
+  font-size: clamp(20px, 2.25vw, 25px);
   font-weight: 400;
   font-style: italic;
   color: var(--text-secondary);
-  line-height: normal;
+  line-height: 1.35;
+  max-width: 760px;
 }
 
 .social-links {
@@ -169,6 +185,7 @@ body::before {
   height: 24px;
   color: var(--text-primary);
   transition: color 0.3s ease;
+  border-radius: 4px;
 }
 
 .social-link:hover {
@@ -191,15 +208,16 @@ body::before {
   gap: 46px;
   max-width: 1072px;
   margin: 0 auto;
-  padding: 10px;
+  padding: 10px clamp(18px, 4vw, 32px);
 }
 
 .about-content {
-  font-family: "Lato", sans-serif;
-  font-size: 24px;
+  font-family: var(--font-lato), sans-serif;
+  font-size: clamp(18px, 2.1vw, 24px);
   font-weight: 400;
   color: var(--text-primary);
-  line-height: normal;
+  line-height: 1.55;
+  max-width: 72ch;
 }
 
 /* Projects Styles */
@@ -218,7 +236,36 @@ body::before {
 .projects-scroll .project-bottom {
   height: auto;
   min-height: 170px;
+  flex: 1;
   justify-content: flex-start;
+}
+
+.project-image-frame {
+  width: 100%;
+  height: 200px;
+  flex: 0 0 200px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-image-frame-dark {
+  background: #0e1a2b;
+}
+
+.home-project-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.home-project-image.contain {
+  object-fit: contain;
+}
+
+.home-project-image.cover {
+  object-fit: cover;
 }
 
 .projects-scroll .project-title,
@@ -288,7 +335,7 @@ body::before {
 }
 
 .project-title {
-  font-family: "Geist Mono", monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 20px;
   font-weight: 700;
   color: #fff;
@@ -297,7 +344,7 @@ body::before {
 }
 
 .project-title-lato {
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-lato), sans-serif;
   font-size: 20px;
   font-weight: 700;
   color: #fff;
@@ -306,7 +353,7 @@ body::before {
 }
 
 .project-description {
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-lato), sans-serif;
   font-size: 15px;
   font-weight: 400;
   color: #fff;
@@ -316,7 +363,7 @@ body::before {
 }
 
 .project-description-small {
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-lato), sans-serif;
   font-size: 14px;
   font-weight: 400;
   color: #fff;
@@ -355,8 +402,9 @@ body::before {
 
 .view-more-card {
   display: flex;
-  width: 337.333px;
-  height: 273px;
+  width: 326px;
+  height: 370px;
+  flex: 0 0 326px;
   padding: 10px 20px;
   justify-content: center;
   align-items: center;
@@ -376,7 +424,7 @@ body::before {
 }
 
 .view-more-text {
-  font-family: "Geist Mono", monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 16px;
   font-weight: 700;
   color: #fff;
@@ -391,19 +439,21 @@ body::before {
 
 /* Languages and Coursework */
 .languages-content {
-  font-family: "Lato", sans-serif;
-  font-size: 24px;
+  font-family: var(--font-lato), sans-serif;
+  font-size: clamp(18px, 2.1vw, 24px);
   font-weight: 400;
   color: var(--text-secondary);
-  line-height: normal;
+  line-height: 1.55;
+  max-width: 72ch;
 }
 
 .coursework-content {
-  font-family: "Lato", sans-serif;
-  font-size: 24px;
+  font-family: var(--font-lato), sans-serif;
+  font-size: clamp(18px, 2.1vw, 24px);
   font-weight: 400;
   color: var(--text-secondary);
-  line-height: normal;
+  line-height: 1.55;
+  max-width: 72ch;
 }
 
 /* Performance Card */
@@ -424,7 +474,7 @@ body::before {
 }
 
 .performance-title {
-  font-family: "Geist Mono", monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 20px;
   font-weight: 700;
   color: var(--text-muted);
@@ -453,7 +503,7 @@ body::before {
 }
 
 .performance-header-text {
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-lato), sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: #fff;
@@ -461,7 +511,7 @@ body::before {
 }
 
 .performance-header-small-text {
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-lato), sans-serif;
   font-size: 10px;
   font-weight: 700;
   color: #fff;
@@ -492,7 +542,7 @@ body::before {
 }
 
 .metric-label {
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-lato), sans-serif;
   font-size: 10px;
   font-weight: 400;
   color: var(--text-muted);
@@ -500,7 +550,7 @@ body::before {
 }
 
 .metric-value {
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-lato), sans-serif;
   font-size: 18px;
   font-weight: 700;
   color: #10b981;
@@ -521,7 +571,7 @@ body::before {
   position: absolute;
   bottom: 5px;
   left: 5px;
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-lato), sans-serif;
   font-size: 15px;
   font-weight: 700;
   color: var(--border-color);
@@ -615,27 +665,29 @@ body::before {
 .project-detail-container {
   max-width: 1140px;
   margin: 0 auto;
-  padding: 20px;
+  padding: clamp(76px, 8vw, 96px) 20px 48px;
 }
 
 .back-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 27px;
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   background: var(--border-color);
   color: #fff;
   text-decoration: none;
-  font-family: "M PLUS 1 Code", monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 20px;
   font-weight: 700;
-  margin-bottom: 32px;
+  margin-bottom: 0;
   transition: all 0.3s ease;
   position: fixed;
   /* top: 20px;         ⟵ remove these two */
   left: 20px;
+  top: 20px;
+  z-index: 1000;
 }
 .details-button {
   display: flex;
@@ -646,7 +698,7 @@ body::before {
   border-radius: 9px;
   background-color: var(--border-color, #3f3f46); /* fallback */
   color: white;
-  font-family: "lato", monospace;
+  font-family: var(--font-lato), sans-serif;
   font-size: 16px;
   font-weight: 400;
   cursor: pointer;
@@ -672,8 +724,8 @@ body::before {
 }
 
 .project-detail-title {
-  font-family: "M PLUS 1 Code", monospace;
-  font-size: 50px;
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(34px, 5vw, 50px);
   font-weight: 700;
   color: var(--text-primary);
   text-align: center;
@@ -694,14 +746,14 @@ body::before {
 }
 
 .project-detail-description {
-  font-family: "M PLUS 1 Code", monospace;
-  font-size: 16px;
-  font-weight: 700;
+  font-family: var(--font-lato), sans-serif;
+  font-size: 18px;
+  font-weight: 400;
   color: var(--text-primary);
-  text-align: center;
-  line-height: 1.55;
+  text-align: left;
+  line-height: 1.7;
   margin: 0 auto 32px;
-  max-width: 1140px;
+  max-width: 780px;
   overflow-wrap: anywhere;
 }
 
@@ -714,7 +766,7 @@ body::before {
   background: var(--accent-secondary);
   color: #fff;
   text-decoration: none;
-  font-family: "M PLUS 1 Code", monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 20px;
   font-weight: 700;
   margin: 0 auto;
@@ -736,9 +788,16 @@ body::before {
   gap: 14px;
   max-width: 1032px;
   margin: 0 auto;
+  padding-top: 24px;
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 0 15px;
@@ -755,8 +814,14 @@ body::before {
     align-items: center;
   }
 
+  .projects-scroll .project-card,
+  .view-more-card {
+    width: min(100%, 326px);
+    flex-basis: 370px;
+  }
+
   .projects-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .main-title {
@@ -768,7 +833,8 @@ body::before {
   }
 
   .project-detail-title {
-    font-size: 36px;
+    font-size: 30px;
+    line-height: 1.35;
   }
 
   .project-detail-image {
@@ -777,11 +843,45 @@ body::before {
   }
 }
 
-@media (max-width: 1024px) {
-  .projects-grid {
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 520px) {
+  .py-12 {
+    padding-top: 40px;
+    padding-bottom: 48px;
+  }
+
+  .main-content,
+  .main-body {
+    padding-inline: 18px;
+  }
+
+  .main-body {
+    gap: 34px;
+  }
+
+  .projects-scroll .project-card,
+  .view-more-card {
+    width: 100%;
+  }
+
+  .project-bottom {
+    padding: 20px;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 .fullscreen-canvas-container {
   width: 100vw;
   height: 100vh;
@@ -789,7 +889,7 @@ body::before {
   flex-direction: column;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  font-family: "Lato", -apple-system, Roboto, Helvetica, sans-serif;
+  font-family: var(--font-lato), -apple-system, Roboto, Helvetica, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
   position: relative;
   z-index: 0;
@@ -867,7 +967,7 @@ body::before {
   top: 40px;
   right: 40px;
   padding: 10px 16px;
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-lato), sans-serif;
   font-size: 14px;
   font-weight: 600;
   border-radius: 8px;
@@ -976,7 +1076,7 @@ body::before {
   justify-content: flex-start;
 
   color: #eae4d7;
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-lato), sans-serif;
   font-size: 12px;
   font-weight: 400;
   line-height: 15px;
@@ -1023,7 +1123,7 @@ body::before {
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-lato), sans-serif;
 }
 
 .math-input:focus {
@@ -1039,7 +1139,7 @@ body::before {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-lato), sans-serif;
   transition: background-color 0.3s ease;
 }
 

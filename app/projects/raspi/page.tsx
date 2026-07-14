@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import ThemeToggle from "../../../components/ThemeToggle";
 
 export default function RaspiProject() {
@@ -6,16 +7,18 @@ export default function RaspiProject() {
     <div className="min-h-screen">
       <ThemeToggle />
       <div className="project-detail-container">
-        <Link href="/projects" className="back-button">
+        <Link href="/projects" className="back-button" aria-label="Back to projects">
           ←
         </Link>
 
         <div style={{ textAlign: "center" }}>
           <h1 className="project-detail-title">Raspberry Pi Homelab</h1>
 
-          <img
+          <Image
             src="/projects/raspi.png"
-            alt="raspiProject"
+            alt="Raspberry Pi homelab"
+            width={604}
+            height={432}
             className="project-detail-image"
           />
 
@@ -38,6 +41,7 @@ export default function RaspiProject() {
             href="https://github.com/Hstrauss1/HudOS"
             className="project-link-button"
             target="_blank"
+            rel="noopener noreferrer"
           >
             Project Link
           </a>
